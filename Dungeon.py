@@ -42,6 +42,7 @@ class Dungeon:
         # 通路
         self.roads: List[Road] = []
 
+        # 初期化
         self._div_floor(0, 0, row, column)
         self._make_rooms()
         self._print_rooms2map()
