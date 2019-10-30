@@ -1,18 +1,21 @@
+from dataclasses import dataclass
+from typing import Tuple
+
 import numpy as np
 import random
 
 
 class Room:
+    min_room_size: Tuple[int, int]
+    max_room_size: Tuple[int, int]
 
-    def __init__(self, dungeon, row_s, column_s, row_e, column_e):
+    def __init__(self, row_s, column_s, row_e, column_e):
         """
-            dungeon : 部屋が属するダンジョン(フロア)
             origin(list) : フロアに対してこの部屋の左上の座標
             size(list): 部屋のサイズ
                 [0] : height(row)
                 [1] : width(column)
         """
-        self.dungeon = dungeon
         self._make_room(row_s, column_s, row_e, column_e)
 
     def _decide_length(self, min_l, start, end, max_l):
@@ -29,10 +32,10 @@ class Room:
                 return length
 
     def _make_room(self, row_s, column_s, row_e, column_e):
-        min_row = self.dungeon.min_room_size[0]
-        max_row = self.dungeon.max_room_size[0]
-        min_column = self.dungeon.min_room_size[1]
-        max_column = self.dungeon.max_room_size[1]
+        min_row = self.min_room_size[0]
+        max_row = self.max_room_size[0]
+        min_column = self.min_room_size[1]
+        max_column = self.max_room_size[1]
 
         print("{0}, {1}".format(min_column, column_e - column_s - 1))
 
@@ -46,6 +49,13 @@ class Room:
         self.size = [height, width]
         # print(self.origin)
 
-        for row in range(height):
-            for column in range(width):
-                self.dungeon.floor_map[row + row_s + center[0]][column + column_s + center[1]] = 2
+    def print_to_map(self, floor_map: np.ndarray):
+        floor_map[self.origin[0]:self.origin[0]+self.size[0], self.origin[1]:self.origin[1]+self.size[1]] = 2
+
+
+@dataclass
+class RoomInfo:
+    top: int
+    left: int
+    bottom: int
+    right: int

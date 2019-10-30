@@ -1,15 +1,11 @@
-from dataclasses import dataclass
 from typing import List
 
 import numpy as np
 import random
-from Room import Room
+from Room import Room, RoomInfo
 
 
 class Dungeon:
-    """
-        
-    """
 
     def __init__(self, row: int, column: int):
         """
@@ -34,9 +30,11 @@ class Dungeon:
 
         # 部屋の最小サイズ
         self.min_room_size = [row / 5 - 2, column / 5 - 2]
+        Room.min_room_size = self.min_room_size
         self.max_room_size = [row / 2, column / 2]
+        Room.max_room_size = self.max_room_size
         # 部屋
-        self.rooms = []
+        self.rooms: List[Room] = []
         # 部屋を作る際に必要な区画の座標を保持する変数
         self.room_info: List[RoomInfo] = []
 
@@ -96,7 +94,11 @@ class Dungeon:
     # 区画内に部屋を作る
     def _make_rooms(self):
         for room_data in self.room_info:
-            self.rooms.append(Room(self, room_data.top, room_data.left, room_data.bottom, room_data.right))
+            self.rooms.append(Room(room_data.top, room_data.left, room_data.bottom, room_data.right))
+
+    def _print_rooms2map(self):
+        for room in self.rooms:
+            room.print_to_map(self.floor_map)
 
     # 部屋を通路で繋げる
     def _connect_rooms(self):
@@ -200,14 +202,6 @@ class Dungeon:
                     # print(self.floor_map[row][column])
 
 
-@dataclass
-class RoomInfo:
-    top: int
-    left: int
-    bottom: int
-    right: int
-
-
 if __name__ == "__main__":
     # row, column は 4の倍数にしてください
     row = 30
@@ -218,6 +212,7 @@ if __name__ == "__main__":
         print(room)
     print()
     dungeon._make_rooms()
+    dungeon._print_rooms2map()
     # dungeon.scaling()
     dungeon._connect_rooms()
     dungeon.floor_map[dungeon.floor_map == 1] = 0
