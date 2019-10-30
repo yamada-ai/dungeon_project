@@ -99,77 +99,84 @@ class Dungeon:
             self.rooms.append(Room(self, room_data.top, room_data.left, room_data.bottom, room_data.right))
 
     # 部屋を通路で繋げる
-    def _connect_aisle(self):
+    def _connect_rooms(self):
         for i in range(len(self.room_info)-1):
-            room1_info = self.room_info[i]
-            room1 = self.rooms[i]
-            room2_info = self.room_info[i+1]
-            room2 = self.rooms[i+1]
-            # 上下に接続している
-            if room1_info.top == room2_info.bottom+1 or room1_info.bottom+1 == room2_info.top:
-                x1 = random.randint(room1.origin[1], room1.origin[1] + room1.room_size[1] - 1)
-                x2 = random.randint(room2.origin[1], room2.origin[1] + room2.room_size[1] - 1)
-                # room1が上側
-                if room1_info.top < room2_info.top:
-                    y1 = room1.origin[0] + room1.room_size[0]
-                    y2 = room2.origin[0]
-                    # 縦方向に通路を引く
-                    # room1
-                    for j in range(y1, room1_info.bottom):
-                        self.floor_map[j][x1] = 3
-                    # room2
-                    for j in range(y2-1, room2_info.top-1, -1):
-                        self.floor_map[j][x2] = 3
-                    # 縦方向の通路を結ぶ
-                    for j in range(min(x1, x2), max(x1, x2)+1):
-                        self.floor_map[room1_info.bottom][j] = 3
-                # room2が上側
-                else:
-                    y1 = room1.origin[0]
-                    y2 = room2.origin[0] + room2.room_size[0]
-                    # 横方向に通路を引く
-                    # room1
-                    for j in range(y1-1, room1_info.top-1, -1):
-                        self.floor_map[j][x1] = 3
-                    # room2
-                    for j in range(y2, room2_info.bottom):
-                        self.floor_map[j][x2] = 3
-                    # 縦方向の通路を結ぶ
-                    for j in range(min(x1, x2), max(x1, x2)+1):
-                        self.floor_map[room2_info.bottom][j] = 3
+            self._create_road(self.room_info[i], self.rooms[i], self.room_info[i+1],  self.rooms[i+1])
 
-            # 左右に接続している
-            if room1_info.left == room2_info.right+1 or room1_info.right+1 == room2_info.left:
-                y1 = random.randint(room1.origin[0], room1.origin[0] + room1.room_size[0] - 1)
-                y2 = random.randint(room2.origin[0], room2.origin[0] + room2.room_size[0] - 1)
-                # room1が左側
-                if room1_info.left < room2_info.left:
-                    x1 = room1.origin[1] + room1.room_size[1]
-                    x2 = room2.origin[1]
-                    # 横方向に通路を引く
-                    # room1
-                    for j in range(x1, room1_info.right):
-                        self.floor_map[y1][j] = 3
-                    # room2
-                    for j in range(x2-1, room2_info.left-1, -1):
-                        self.floor_map[y2][j] = 3
-                    # 横方向の通路を結ぶ
-                    for j in range(min(y1, y2), max(y1, y2)+1):
-                        self.floor_map[j][room1_info.right] = 3
-                # room2が左側
-                else:
-                    x1 = room1.origin[1]
-                    x2 = room2.origin[1] + room2.room_size[1]
-                    # 横方向に通路を引く
-                    # room1
-                    for j in range(x1-1, room1_info.left-1, -1):
-                        self.floor_map[y1][j] = 3
-                    # room2
-                    for j in range(x2, room2_info.right):
-                        self.floor_map[y2][j] = 3
-                    # 横方向の通路を結ぶ
-                    for j in range(min(y1, y2), max(y1, y2)+1):
-                        self.floor_map[j][room2_info.right] = 3
+            for j in range(i+2, len(self.room_info)-1):
+                is_connected = self._create_road(self.room_info[i], self.rooms[i], self.room_info[j],  self.rooms[j])
+                if is_connected:
+                    break
+
+    def _create_road(self, room1_info, room1, room2_info, room2):
+        # 上下に接続している
+        if room1_info.top == room2_info.bottom + 1 or room1_info.bottom + 1 == room2_info.top:
+            x1 = random.randint(room1.origin[1], room1.origin[1] + room1.room_size[1] - 1)
+            x2 = random.randint(room2.origin[1], room2.origin[1] + room2.room_size[1] - 1)
+            # room1が上側
+            if room1_info.top < room2_info.top:
+                y1 = room1.origin[0] + room1.room_size[0]
+                y2 = room2.origin[0]
+                # 縦方向に通路を引く
+                # room1
+                for j in range(y1, room1_info.bottom):
+                    self.floor_map[j][x1] = 3
+                # room2
+                for j in range(y2 - 1, room2_info.top - 1, -1):
+                    self.floor_map[j][x2] = 3
+                # 縦方向の通路を結ぶ
+                for j in range(min(x1, x2), max(x1, x2) + 1):
+                    self.floor_map[room1_info.bottom][j] = 3
+            # room2が上側
+            else:
+                y1 = room1.origin[0]
+                y2 = room2.origin[0] + room2.room_size[0]
+                # 横方向に通路を引く
+                # room1
+                for j in range(y1 - 1, room1_info.top - 1, -1):
+                    self.floor_map[j][x1] = 3
+                # room2
+                for j in range(y2, room2_info.bottom):
+                    self.floor_map[j][x2] = 3
+                # 縦方向の通路を結ぶ
+                for j in range(min(x1, x2), max(x1, x2) + 1):
+                    self.floor_map[room2_info.bottom][j] = 3
+            return True
+
+        # 左右に接続している
+        if room1_info.left == room2_info.right + 1 or room1_info.right + 1 == room2_info.left:
+            y1 = random.randint(room1.origin[0], room1.origin[0] + room1.room_size[0] - 1)
+            y2 = random.randint(room2.origin[0], room2.origin[0] + room2.room_size[0] - 1)
+            # room1が左側
+            if room1_info.left < room2_info.left:
+                x1 = room1.origin[1] + room1.room_size[1]
+                x2 = room2.origin[1]
+                # 横方向に通路を引く
+                # room1
+                for j in range(x1, room1_info.right):
+                    self.floor_map[y1][j] = 3
+                # room2
+                for j in range(x2 - 1, room2_info.left - 1, -1):
+                    self.floor_map[y2][j] = 3
+                # 横方向の通路を結ぶ
+                for j in range(min(y1, y2), max(y1, y2) + 1):
+                    self.floor_map[j][room1_info.right] = 3
+            # room2が左側
+            else:
+                x1 = room1.origin[1]
+                x2 = room2.origin[1] + room2.room_size[1]
+                # 横方向に通路を引く
+                # room1
+                for j in range(x1 - 1, room1_info.left - 1, -1):
+                    self.floor_map[y1][j] = 3
+                # room2
+                for j in range(x2, room2_info.right):
+                    self.floor_map[y2][j] = 3
+                # 横方向の通路を結ぶ
+                for j in range(min(y1, y2), max(y1, y2) + 1):
+                    self.floor_map[j][room2_info.right] = 3
+            return True
+        return False
 
     def print_floor_map(self):
         color_format = (
@@ -211,6 +218,7 @@ if __name__ == "__main__":
         print(room)
     print()
     dungeon._make_rooms()
-    dungeon.scaling()
-    dungeon._connect_aisle()
+    # dungeon.scaling()
+    dungeon._connect_rooms()
+    dungeon.floor_map[dungeon.floor_map == 1] = 0
     dungeon.print_floor_map()
