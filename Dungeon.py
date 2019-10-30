@@ -42,6 +42,14 @@ class Dungeon:
         # 通路
         self.roads: List[Road] = []
 
+        self._div_floor(0, 0, row, column)
+        self._make_rooms()
+        self._print_rooms2map()
+        self._connect_rooms()
+        self._print_roads2map()
+        self.floor_map[self.floor_map == 1] = 0
+        self.print_floor_map()
+
     # フロアマップを分割する
     def _div_floor(self, row_s, column_s, row_e, column_e):
         self.div_count += 1
@@ -152,14 +160,3 @@ if __name__ == "__main__":
     row = 30
     column = 40
     dungeon = Dungeon(row, column)
-    dungeon._div_floor(0, 0, row, column)
-    for room in dungeon.room_info:
-        print(room)
-    print()
-    dungeon._make_rooms()
-    dungeon._print_rooms2map()
-    # dungeon.scaling()
-    dungeon._connect_rooms()
-    dungeon._print_roads2map()
-    dungeon.floor_map[dungeon.floor_map == 1] = 0
-    dungeon.print_floor_map()
