@@ -8,7 +8,7 @@ class Room:
         """
             dungeon : 部屋が属するダンジョン(フロア)
             origin(list) : フロアに対してこの部屋の左上の座標
-            room_size(list): 部屋のサイズ
+            size(list): 部屋のサイズ
                 [0] : height(row)
                 [1] : width(column)
         """
@@ -43,7 +43,7 @@ class Room:
         center = (np.ceil(center)).astype(np.int32)
 
         self.origin = [row_s + center[0], column_s + center[1]]
-        self.room_size = [height, width]
+        self.size = [height, width]
         # print(self.origin)
 
         for row in range(height):
