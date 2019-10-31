@@ -12,6 +12,8 @@ class Simulator:
         self.fried_agent = Friend(int(index/self.dungeon.floor_map.shape[1]), int(index%self.dungeon.floor_map.shape[1]))
 
     def action(self, action):
+        before_point = (self.fried_agent.x, self.fried_agent.y)
+
         if action == 0:
             pass
         elif action == 1:
@@ -23,6 +25,9 @@ class Simulator:
         elif action == 4:
             self.fried_agent.x -= 1
 
+        if self.dungeon.floor_map[self.fried_agent.y][self.fried_agent.x] == 0:
+            self.fried_agent.x = before_point[0]
+            self.fried_agent.y = before_point[1]
         print(self.fried_agent)
 
     def dump2json(self):
