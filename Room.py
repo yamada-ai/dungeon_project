@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Tuple
+from typing import Tuple, List
 
 import numpy as np
 import random
@@ -16,7 +16,9 @@ class Room:
                 [0] : height(row)
                 [1] : width(column)
         """
+        from Road import Road
         self._make_room(row_s, column_s, row_e, column_e)
+        self.roads: List[Road] = []
 
     def _decide_length(self, min_l, start, end, max_l):
         """
@@ -42,15 +44,23 @@ class Room:
         height = self._decide_length(min_row, row_s, row_e, max_row)
         width = self._decide_length(min_column, column_s, column_e, max_column)
 
-        center = [((row_e - row_s) - height) / 2, ((column_e - column_s) - width) / 2]
-        center = (np.ceil(center)).astype(np.int32)
+        # +1 は切り上げ計算のため
+        center = [((row_e - row_s) - height + 1) // 2, ((column_e - column_s) - width + 1) // 2]
 
         self.origin = [row_s + center[0], column_s + center[1]]
         self.size = [height, width]
         # print(self.origin)
 
     def print_to_map(self, floor_map: np.ndarray):
-        floor_map[self.origin[0]:self.origin[0]+self.size[0], self.origin[1]:self.origin[1]+self.size[1]] = 2
+        floor_map[self.origin[0]:self.origin[0]+self.size[0], self.origin[1]:self.origin[1]+self.size[1]] = 1
+
+    def dump2json(self):
+        return {
+            'id': id(self),
+            'origin': self.origin,
+            'size': self.size,
+            'roads': [road.dump2json() for road in self.roads]
+        }
 
 
 @dataclass

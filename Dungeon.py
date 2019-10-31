@@ -23,7 +23,7 @@ class Dungeon:
         self.row = row
         self.column = column
         # フロアマップの作成
-        self.floor_map = np.zeros((self.row, self.column), dtype="int32")
+        self.floor_map: np.ndarray = np.zeros((self.row, self.column), dtype="int32")
         self.icon = ["■", "　"]
         # 区画の最小サイズ(5分割)
         self.min_div_size = [row / 5 + 1, column / 5 + 1]
@@ -48,7 +48,7 @@ class Dungeon:
         self._print_rooms2map()
         self._connect_rooms()
         self._print_roads2map()
-        self.floor_map[self.floor_map == 1] = 0
+        self.floor_map[self.floor_map == 3] = 0
         self.print_floor_map()
 
     # フロアマップを分割する
@@ -60,7 +60,7 @@ class Dungeon:
         p = p if p % 2 == 0 else p + 1
         # 境界線を描く
         for row in range(row_s, row_e):
-            self.floor_map[row][p + column_s] = 1
+            self.floor_map[row][p + column_s] = 3
 
         # 左側が大きければ変わらない
         column_end = p + column_s
@@ -83,7 +83,7 @@ class Dungeon:
 
         # 横方向に境界線を描く
         for column in range(column_s, column_end):
-            self.floor_map[q + row_s][column] = 1
+            self.floor_map[q + row_s][column] = 3
 
         # 上側が大きければ変わらない
         row_end = q + row_s
@@ -137,9 +137,9 @@ class Dungeon:
     def print_floor_map(self):
         color_format = (
             '\033[47m  \033[0m',    # 白
-            '\033[41m  \033[0m',    # 赤
             '\033[44m  \033[0m',    # 青
             '\033[42m  \033[0m',    # 緑
+            '\033[41m  \033[0m',    # 赤
             '\033[48m  \033[0m'     # 黒
         )
         for row in self.floor_map:
@@ -154,6 +154,14 @@ class Dungeon:
                     # print("a")
                     self.floor_map[row][column] = 4
                     # print(self.floor_map[row][column])
+
+    def dump2json(self):
+        return {
+            'row': self.row,
+            'column': self.column,
+            'floor_map': self.floor_map.tolist(),
+            'rooms': [room.dump2json() for room in self.rooms]
+        }
 
 
 if __name__ == "__main__":

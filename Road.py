@@ -2,10 +2,10 @@ import random
 from typing import Tuple, List
 import numpy as np
 
-from Room import Room, RoomInfo
-
 
 class Road:
+    from Room import Room, RoomInfo
+
     def __init__(self, room1: Room, room1_info: RoomInfo, room2: Room, room2_info: RoomInfo):
         self.room1 = room1
         self.room1_info = room1_info
@@ -29,6 +29,9 @@ class Road:
         room2 = self.room2
         room1_info = self.room1_info
         room2_info = self.room2_info
+        # 各部屋に通路を登録
+        room1.roads.append(self)
+        room2.roads.append(self)
         # 上下に接続している
         if room1_info.top == room2_info.bottom + 1 or room1_info.bottom + 1 == room2_info.top:
             x1 = random.randint(room1.origin[1], room1.origin[1] + room1.size[1] - 1)
@@ -97,4 +100,11 @@ class Road:
 
     def print2map(self, floor_map: np.ndarray):
         for cell in self.cells:
-            floor_map[cell] = 3
+            floor_map[cell] = 2
+
+    def dump2json(self):
+        return {
+            'id': id(self),
+            'room1_id': id(self.room1),
+            'room2_id': id(self.room2),
+        }
