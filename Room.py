@@ -19,6 +19,7 @@ class Room:
         from Road import Road
         self._make_room(row_s, column_s, row_e, column_e)
         self.roads: List[Road] = []
+        self.initial_enemy_positions: List[Tuple[int, int]] = []
 
     def _decide_length(self, min_l, start, end, max_l):
         """

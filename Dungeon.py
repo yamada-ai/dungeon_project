@@ -50,6 +50,14 @@ def cell2color(cell):
         return ColorSequence.BLACK.value+'  '+ColorSequence.RESET.value
 
 
+FOUR_DIRECTION_VECTOR = (
+    (0, 1),
+    (1, 0),
+    (0, -1),
+    (-1, 0)
+)
+
+
 class Dungeon:
 
     def __init__(self, row: int, column: int):
@@ -91,6 +99,8 @@ class Dungeon:
         self._print_rooms2map()
         self._connect_rooms()
         self._print_roads2map()
+        self.set_protected_area()
+        self._generate_enemy()
         self.floor_map[self.floor_map == CellInfo.OTHER] = CellInfo.WALL
         self.print_floor_map()
 
@@ -172,6 +182,23 @@ class Dungeon:
         self.roads.append(road)
         return True
 
+    def _generate_enemy(self):
+        for room in self.rooms:
+            room_map = self.floor_map[room.origin[0]:room.origin[0]+room.size[0], room.origin[1]:room.origin[1]+room.size[1]]
+            for _ in range(2):
+                index = random.choice(np.where(room_map.reshape(-1) == CellInfo.ROOM)[0])
+                y = int((index // room_map.shape[1]) + room.origin[0])
+                x = int((index % room_map.shape[1]) + room.origin[1])
+
+                self.floor_map[y][x] = CellInfo.ENEMY
+                self._protect_around(x, y)
+                room.initial_enemy_positions.append((x, y))
+
+    def _protect_around(self, x: int, y: int):
+        for v in FOUR_DIRECTION_VECTOR:
+            if self.floor_map[y+v[1]][x+v[0]] == CellInfo.ROOM:
+                self.floor_map[y+v[1]][x+v[0]] = CellInfo.PROTECTED
+
     def _print_roads2map(self):
         for road in self.roads:
             road.print2map(self.floor_map)
@@ -181,6 +208,17 @@ class Dungeon:
             for column in row:
                 print(cell2color(column), end="")
             print()
+
+    def set_protected_area(self):
+        for road in self.roads:
+            for road_end_position in road.ends:
+                for v in FOUR_DIRECTION_VECTOR:
+                    x = road_end_position[0]+v[0]
+                    y = road_end_position[1]+v[1]
+                    if self.floor_map[y][x] == CellInfo.ROOM:
+                        self.floor_map[y][x] = CellInfo.PROTECTED
+                        self._protect_around(x, y)
+                        break
 
     def scaling(self):
         for row in range(self.row):
