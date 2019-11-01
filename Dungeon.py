@@ -45,7 +45,7 @@ def cell2color(cell):
     elif cell == CellInfo.PROTECTED:
         return ColorSequence.YELLOW.value+'  '+ColorSequence.RESET.value
     elif cell == CellInfo.GOAL:
-        return ColorSequence.GREEN+'  '+ColorSequence.RESET.value
+        return ColorSequence.GREEN.value+'  '+ColorSequence.RESET.value
     elif cell == CellInfo.OTHER:
         return ColorSequence.BLACK.value+'  '+ColorSequence.RESET.value
 
