@@ -42,7 +42,7 @@ class Road:
                 for j in range(y1, room1_info.bottom):
                     self.cells.append((j, x1))
                 # room2
-                for j in range(y2 - 1, room2_info.top - 1, -1):
+                for j in range(room2_info.top, y2):
                     self.cells.append((j, x2))
                 # 縦方向の通路を結ぶ
                 for j in range(min(x1, x2), max(x1, x2) + 1):
@@ -51,9 +51,9 @@ class Road:
             else:
                 y1 = room1.origin[0]
                 y2 = room2.origin[0] + room2.size[0]
-                # 横方向に通路を引く
+                # 縦方向に通路を引く
                 # room1
-                for j in range(y1 - 1, room1_info.top - 1, -1):
+                for j in range(room1_info.top, y1):
                     self.cells.append((j, x1))
                 # room2
                 for j in range(y2, room2_info.bottom):
@@ -75,7 +75,7 @@ class Road:
                 for j in range(x1, room1_info.right):
                     self.cells.append((y1, j))
                 # room2
-                for j in range(x2 - 1, room2_info.left - 1, -1):
+                for j in range(room2_info.left, x2):
                     self.cells.append((y2, j))
                 # 横方向の通路を結ぶ
                 for j in range(min(y1, y2), max(y1, y2) + 1):
@@ -86,7 +86,7 @@ class Road:
                 x2 = room2.origin[1] + room2.size[1]
                 # 横方向に通路を引く
                 # room1
-                for j in range(x1 - 1, room1_info.left - 1, -1):
+                for j in range(room1_info.left, x1):
                     self.cells.append((y1, j))
                 # room2
                 for j in range(x2, room2_info.right):
