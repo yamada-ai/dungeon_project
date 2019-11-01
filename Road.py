@@ -7,10 +7,8 @@ class Road:
     from Room import Room, RoomInfo
 
     def __init__(self, room1: Room, room1_info: RoomInfo, room2: Room, room2_info: RoomInfo):
-        self.room1 = room1
-        self.room1_info = room1_info
-        self.room2 = room2
-        self.room2_info = room2_info
+        self.connected_rooms = (room1, room2)
+        self.connected_rooms_info = (room1_info, room2_info)
         self.cells: List[Tuple[int, int]] = []
 
         self.can_connect = self._can_connect()
@@ -18,17 +16,16 @@ class Road:
             self._connect()
 
     def _can_connect(self):
-        if self.room1_info.top == self.room2_info.bottom + 1 or self.room1_info.bottom + 1 == self.room2_info.top:
+        room1_info, room2_info = self.connected_rooms_info
+        if room1_info.top == room2_info.bottom + 1 or room1_info.bottom + 1 == room2_info.top:
             return True
-        if self.room1_info.left == self.room2_info.right + 1 or self.room1_info.right + 1 == self.room2_info.left:
+        if room1_info.left == room2_info.right + 1 or room1_info.right + 1 == room2_info.left:
             return True
         return False
 
     def _connect(self):
-        room1 = self.room1
-        room2 = self.room2
-        room1_info = self.room1_info
-        room2_info = self.room2_info
+        room1, room2 = self.connected_rooms
+        room1_info, room2_info = self.connected_rooms_info
         # 各部屋に通路を登録
         room1.roads.append(self)
         room2.roads.append(self)
@@ -106,6 +103,6 @@ class Road:
     def dump2json(self):
         return {
             'id': id(self),
-            'room1_id': id(self.room1),
-            'room2_id': id(self.room2),
+            'room1_id': id(self.connected_rooms[0]),
+            'room2_id': id(self.connected_rooms[1]),
         }
