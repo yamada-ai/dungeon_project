@@ -137,7 +137,6 @@ class Dungeon:
             # 下側は区画が確定する
             self.room_info.append(RoomInfo(row_end + 1, column_s, row_e, column_end))
 
-        # print("{0}, {1}, {2}, {3}".format(row_s, column_s, row_end, column_end))
         if self.div_count == self.div_max:
             self.room_info.append(RoomInfo(row_s, column_s, row_end, column_end))
             return
@@ -184,9 +183,7 @@ class Dungeon:
         for row in range(self.row):
             for column in range(self.column):
                 if column % 5 == 0 and row % 5 == 0:
-                    # print("a")
                     self.floor_map[row][column] = CellInfo.OTHER
-                    # print(self.floor_map[row][column])
 
     def dump2json(self):
         return {

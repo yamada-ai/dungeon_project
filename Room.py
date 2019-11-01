@@ -39,8 +39,6 @@ class Room:
         min_column = self.min_room_size[1]
         max_column = self.max_room_size[1]
 
-        print("{0}, {1}".format(min_column, column_e - column_s - 1))
-
         height = self._decide_length(min_row, row_s, row_e, max_row)
         width = self._decide_length(min_column, column_s, column_e, max_column)
 
@@ -49,7 +47,6 @@ class Room:
 
         self.origin = [row_s + center[0], column_s + center[1]]
         self.size = [height, width]
-        # print(self.origin)
 
     def print_to_map(self, floor_map: np.ndarray):
         from Dungeon import CellInfo

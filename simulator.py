@@ -28,7 +28,6 @@ class Simulator:
         if self.dungeon.floor_map[self.fried_agent.y][self.fried_agent.x] == CellInfo.WALL:
             self.fried_agent.x = before_point[0]
             self.fried_agent.y = before_point[1]
-        print(self.fried_agent)
 
     def dump2json(self):
         return {
