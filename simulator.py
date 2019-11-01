@@ -9,7 +9,7 @@ class Simulator:
     def __init__(self, row=30, column=40):
         self.dungeon = Dungeon(row, column)
         index = random.choice(np.where(self.dungeon.floor_map.reshape(-1) == CellInfo.ROOM)[0])
-        self.fried_agent = Friend(int(index/self.dungeon.floor_map.shape[1]), int(index%self.dungeon.floor_map.shape[1]))
+        self.fried_agent = Friend(int(index/self.dungeon.floor_map.shape[1]), int(index % self.dungeon.floor_map.shape[1]))
 
     def action(self, action):
         before_point = (self.fried_agent.x, self.fried_agent.y)

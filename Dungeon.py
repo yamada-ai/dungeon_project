@@ -14,8 +14,9 @@ class CellInfo(Enum):
     ROAD = 2
     AGENT = 3
     ENEMY = 4
-    PROTECTED = 5
-    OTHER = 6
+    GOAL = 5
+    PROTECTED = 6
+    OTHER = 7
 
 
 class ColorSequence(Enum):
@@ -36,13 +37,15 @@ def cell2color(cell):
     elif cell == CellInfo.ROOM:
         return ColorSequence.BLUE.value+'  '+ColorSequence.RESET.value
     elif cell == CellInfo.ROAD:
-        return ColorSequence.GREEN.value+'  '+ColorSequence.RESET.value
+        return ColorSequence.CYAN.value+'  '+ColorSequence.RESET.value
     elif cell == CellInfo.AGENT:
         return ColorSequence.MAGENTA.value+'  '+ColorSequence.RESET.value
     elif cell == CellInfo.ENEMY:
         return ColorSequence.RED.value+'  '+ColorSequence.RESET.value
     elif cell == CellInfo.PROTECTED:
         return ColorSequence.YELLOW.value+'  '+ColorSequence.RESET.value
+    elif cell == CellInfo.GOAL:
+        return ColorSequence.GREEN+'  '+ColorSequence.RESET.value
     elif cell == CellInfo.OTHER:
         return ColorSequence.BLACK.value+'  '+ColorSequence.RESET.value
 
