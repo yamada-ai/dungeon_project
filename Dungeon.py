@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import List
 
 import numpy as np
@@ -5,6 +6,45 @@ import random
 
 from Road import Road
 from Room import Room, RoomInfo
+
+
+class CellInfo(Enum):
+    WALL = 0
+    ROOM = 1
+    ROAD = 2
+    AGENT = 3
+    ENEMY = 4
+    PROTECTED = 5
+    OTHER = 6
+
+
+class ColorSequence(Enum):
+    BLACK = '\033[40m'
+    RED = '\033[41m'
+    GREEN = '\033[42m'
+    YELLOW = '\033[43m'
+    BLUE = '\033[44m'
+    MAGENTA = '\033[45m'
+    CYAN = '\033[46m'
+    WHITE = '\033[47m'
+    RESET = '\033[0m'
+
+
+def cell2color(cell):
+    if cell == CellInfo.WALL:
+        return ColorSequence.WHITE.value+'  '+ColorSequence.RESET.value
+    elif cell == CellInfo.ROOM:
+        return ColorSequence.BLUE.value+'  '+ColorSequence.RESET.value
+    elif cell == CellInfo.ROAD:
+        return ColorSequence.GREEN.value+'  '+ColorSequence.RESET.value
+    elif cell == CellInfo.AGENT:
+        return ColorSequence.MAGENTA.value+'  '+ColorSequence.RESET.value
+    elif cell == CellInfo.ENEMY:
+        return ColorSequence.RED.value+'  '+ColorSequence.RESET.value
+    elif cell == CellInfo.PROTECTED:
+        return ColorSequence.YELLOW.value+'  '+ColorSequence.RESET.value
+    elif cell == CellInfo.OTHER:
+        return ColorSequence.BLACK.value+'  '+ColorSequence.RESET.value
 
 
 class Dungeon:
@@ -23,7 +63,7 @@ class Dungeon:
         self.row = row
         self.column = column
         # フロアマップの作成
-        self.floor_map: np.ndarray = np.zeros((self.row, self.column), dtype="int32")
+        self.floor_map: np.ndarray = np.full((self.row, self.column), CellInfo.WALL, dtype=object)
         self.icon = ["■", "　"]
         # 区画の最小サイズ(5分割)
         self.min_div_size = [row / 5 + 1, column / 5 + 1]
@@ -48,7 +88,7 @@ class Dungeon:
         self._print_rooms2map()
         self._connect_rooms()
         self._print_roads2map()
-        self.floor_map[self.floor_map == 3] = 0
+        self.floor_map[self.floor_map == CellInfo.OTHER] = CellInfo.WALL
         self.print_floor_map()
 
     # フロアマップを分割する
@@ -60,7 +100,7 @@ class Dungeon:
         p = p if p % 2 == 0 else p + 1
         # 境界線を描く
         for row in range(row_s, row_e):
-            self.floor_map[row][p + column_s] = 3
+            self.floor_map[row][p + column_s] = CellInfo.OTHER
 
         # 左側が大きければ変わらない
         column_end = p + column_s
@@ -83,7 +123,7 @@ class Dungeon:
 
         # 横方向に境界線を描く
         for column in range(column_s, column_end):
-            self.floor_map[q + row_s][column] = 3
+            self.floor_map[q + row_s][column] = CellInfo.OTHER
 
         # 上側が大きければ変わらない
         row_end = q + row_s
@@ -135,16 +175,9 @@ class Dungeon:
             road.print2map(self.floor_map)
 
     def print_floor_map(self):
-        color_format = (
-            '\033[47m  \033[0m',    # 白
-            '\033[44m  \033[0m',    # 青
-            '\033[42m  \033[0m',    # 緑
-            '\033[41m  \033[0m',    # 赤
-            '\033[48m  \033[0m'     # 黒
-        )
         for row in self.floor_map:
             for column in row:
-                print(color_format[column], end="")
+                print(cell2color(column), end="")
             print()
 
     def scaling(self):
@@ -152,16 +185,19 @@ class Dungeon:
             for column in range(self.column):
                 if column % 5 == 0 and row % 5 == 0:
                     # print("a")
-                    self.floor_map[row][column] = 4
+                    self.floor_map[row][column] = CellInfo.OTHER
                     # print(self.floor_map[row][column])
 
     def dump2json(self):
         return {
             'row': self.row,
             'column': self.column,
-            'floor_map': self.floor_map.tolist(),
+            'floor_map': self.get_map_as_list(),
             'rooms': [room.dump2json() for room in self.rooms]
         }
+
+    def get_map_as_list(self):
+        return [[e.value for e in line] for line in self.floor_map]
 
 
 if __name__ == "__main__":

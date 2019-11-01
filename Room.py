@@ -52,7 +52,8 @@ class Room:
         # print(self.origin)
 
     def print_to_map(self, floor_map: np.ndarray):
-        floor_map[self.origin[0]:self.origin[0]+self.size[0], self.origin[1]:self.origin[1]+self.size[1]] = 1
+        from Dungeon import CellInfo
+        floor_map[self.origin[0]:self.origin[0]+self.size[0], self.origin[1]:self.origin[1]+self.size[1]] = CellInfo.ROOM
 
     def dump2json(self):
         return {

@@ -1,14 +1,14 @@
 import random
 
 from Agent import Friend
-from Dungeon import Dungeon
+from Dungeon import Dungeon, CellInfo
 import numpy as np
 
 
 class Simulator:
     def __init__(self, row=30, column=40):
         self.dungeon = Dungeon(row, column)
-        index = random.choice(np.where(self.dungeon.floor_map.reshape(-1) == 1)[0])
+        index = random.choice(np.where(self.dungeon.floor_map.reshape(-1) == CellInfo.ROOM)[0])
         self.fried_agent = Friend(int(index/self.dungeon.floor_map.shape[1]), int(index%self.dungeon.floor_map.shape[1]))
 
     def action(self, action):
@@ -25,7 +25,7 @@ class Simulator:
         elif action == 4:
             self.fried_agent.x -= 1
 
-        if self.dungeon.floor_map[self.fried_agent.y][self.fried_agent.x] == 0:
+        if self.dungeon.floor_map[self.fried_agent.y][self.fried_agent.x] == CellInfo.WALL:
             self.fried_agent.x = before_point[0]
             self.fried_agent.y = before_point[1]
         print(self.fried_agent)

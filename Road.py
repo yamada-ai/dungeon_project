@@ -99,8 +99,9 @@ class Road:
                     self.cells.append((j, room2_info.right))
 
     def print2map(self, floor_map: np.ndarray):
+        from Dungeon import CellInfo
         for cell in self.cells:
-            floor_map[cell] = 2
+            floor_map[cell] = CellInfo.ROAD
 
     def dump2json(self):
         return {
