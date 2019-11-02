@@ -104,7 +104,6 @@ class Dungeon:
         self._generate_enemy()
         self.floor_map[self.floor_map == CellInfo.OTHER] = CellInfo.WALL
         self.print_floor_map()
-        self.remove_protected_area()
 
     # フロアマップを分割する
     def _div_floor(self, row_s, column_s, row_e, column_e):
@@ -190,7 +189,6 @@ class Dungeon:
         x = int((index % self.floor_map.shape[1]))
 
         self.floor_map[y][x] = CellInfo.GOAL
-        self._protect_around(x, y)
 
     def _generate_enemy(self):
         for room in self.rooms:
