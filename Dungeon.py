@@ -216,7 +216,7 @@ class Dungeon:
                 for v in FOUR_DIRECTION_VECTOR:
                     x = road_end_position[0]+v[0]
                     y = road_end_position[1]+v[1]
-                    if self.floor_map[y][x] == CellInfo.ROOM:
+                    if self.floor_map[y][x] == CellInfo.ROOM or self.floor_map[y][x] == CellInfo.PROTECTED:
                         self.floor_map[y][x] = CellInfo.PROTECTED
                         self._protect_around(x, y)
                         break
