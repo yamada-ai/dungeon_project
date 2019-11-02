@@ -1,5 +1,6 @@
 import random
 
+from Room import Room
 from Agent import Friend, Enemy
 from Dungeon import Dungeon, CellInfo
 from util import FOUR_DIRECTION_VECTOR
@@ -19,6 +20,7 @@ class Simulator:
         # 保護解除したマップ
         self.map = self.dungeon.floor_map.copy()
         self.map[self.map == CellInfo.PROTECTED] = CellInfo.ROOM
+        self.map[self.map == CellInfo.ENEMY] = CellInfo.ROOM
 
         self.enemy_list = []
         for room in self.dungeon.rooms:

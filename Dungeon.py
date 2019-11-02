@@ -191,7 +191,7 @@ class Dungeon:
                 y = int((index // room_map.shape[1]) + room.origin[0])
                 x = int((index % room_map.shape[1]) + room.origin[1])
 
-                # self.floor_map[y][x] = CellInfo.ENEMY
+                self.floor_map[y][x] = CellInfo.ENEMY
                 self._protect_around(x, y)
                 room.initial_enemy_positions.append((x, y))
 
