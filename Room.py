@@ -9,7 +9,7 @@ class Room:
     min_room_size: Tuple[int, int]
     max_room_size: Tuple[int, int]
 
-    def __init__(self, row_s, column_s, row_e, column_e):
+    def __init__(self, row_s, column_s, row_e, column_e, _id):
         """
             origin(list) : フロアに対してこの部屋の左上の座標
             size(list): 部屋のサイズ
@@ -18,6 +18,7 @@ class Room:
         """
         from Road import Road
         self._make_room(row_s, column_s, row_e, column_e)
+        self.id = _id
         self.roads: List[Road] = []
         self.initial_enemy_positions: List[Tuple[int, int]] = []
 
@@ -51,16 +52,18 @@ class Room:
 
     def print_to_map(self, floor_map: np.ndarray):
         from Dungeon import CellInfo
-        floor_map[self.origin[0]:self.origin[0]+self.size[0], self.origin[1]:self.origin[1]+self.size[1]] = CellInfo.ROOM
+        floor_map[
+                self.origin[0]:self.origin[0] + self.size[0],
+                self.origin[1]:self.origin[1] + self.size[1]] = CellInfo.ROOM
         # 角にエージェントが生成されないようにする
         floor_map[self.origin[0], self.origin[1]] = CellInfo.PROTECTED
-        floor_map[self.origin[0]+self.size[0]-1, self.origin[1]] = CellInfo.PROTECTED
-        floor_map[self.origin[0], self.origin[1]+self.size[1]-1] = CellInfo.PROTECTED
-        floor_map[self.origin[0]+self.size[0]-1, self.origin[1]+self.size[1]-1] = CellInfo.PROTECTED
+        floor_map[self.origin[0] + self.size[0] - 1, self.origin[1]] = CellInfo.PROTECTED
+        floor_map[self.origin[0], self.origin[1] + self.size[1] - 1] = CellInfo.PROTECTED
+        floor_map[self.origin[0] + self.size[0] - 1, self.origin[1] + self.size[1] - 1] = CellInfo.PROTECTED
 
     def dump2json(self):
         return {
-            'id': id(self),
+            'id': self.id,
             'origin': self.origin,
             'size': self.size,
             'roads': [road.dump2json() for road in self.roads]

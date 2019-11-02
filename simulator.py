@@ -11,11 +11,13 @@ class Simulator:
     def __init__(self, row=30, column=40):
         self.dungeon = Dungeon(row, column)
         first_room: Room = random.choice(self.dungeon.rooms)
-        first_room_map = self.dungeon.floor_map[first_room.origin[0]:first_room.origin[0]+first_room.size[0], first_room.origin[1]:first_room.origin[1]+first_room.size[1]]
+        first_room_map = self.dungeon.floor_map[
+                         first_room.origin[0]:first_room.origin[0] + first_room.size[0],
+                         first_room.origin[1]:first_room.origin[1] + first_room.size[1]]
         index = random.choice(np.where(first_room_map.reshape(-1) == CellInfo.ROOM)[0])
         y = int(index / first_room_map.shape[1] + first_room.origin[0])
         x = int(index % first_room_map.shape[1] + first_room.origin[1])
-        self.fried_agent = Friend(y, x, id(first_room))
+        self.fried_agent = Friend(y, x, first_room.id)
 
         # 保護解除したマップ
         self.map = self.dungeon.floor_map.copy()
@@ -44,6 +46,17 @@ class Simulator:
         if self.map[self.fried_agent.y][self.fried_agent.x] == CellInfo.WALL:
             self.fried_agent.x = before_point[0]
             self.fried_agent.y = before_point[1]
+        if self.map[self.fried_agent.y][self.fried_agent.x] == CellInfo.ROAD:
+            road = [road for road in self.dungeon.rooms[self.fried_agent.map_id].roads if
+                    (self.fried_agent.x, self.fried_agent.y) in road.ends][0]
+            end_position = [end for end in road.ends if end != (self.fried_agent.x, self.fried_agent.y)][0]
+            for v in FOUR_DIRECTION_VECTOR:
+                if self.map[end_position[1] + v[1], end_position[0] + v[0]] == CellInfo.ROOM:
+                    self.fried_agent.x = end_position[0] + v[0]
+                    self.fried_agent.y = end_position[1] + v[1]
+                    self.fried_agent.map_id = \
+                        [room for room in road.connected_rooms if room.id != self.fried_agent.map_id][0].id
+                    break
 
         self.enemy_action()
 

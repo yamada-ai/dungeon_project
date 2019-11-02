@@ -49,7 +49,7 @@ class Road:
                     self.cells.append((room1_info.bottom, j))
             # room2が上側
             else:
-                y1 = room1.origin[0] -1
+                y1 = room1.origin[0] - 1
                 y2 = room2.origin[0] + room2.size[0]
                 # 縦方向に通路を引く
                 # room1

@@ -152,8 +152,8 @@ class Dungeon:
 
     # 区画内に部屋を作る
     def _make_rooms(self):
-        for room_data in self.room_info:
-            self.rooms.append(Room(room_data.top, room_data.left, room_data.bottom, room_data.right))
+        for i, room_data in enumerate(self.room_info):
+            self.rooms.append(Room(room_data.top, room_data.left, room_data.bottom, room_data.right, i))
 
     def _print_rooms2map(self):
         for room in self.rooms:
