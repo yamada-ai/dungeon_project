@@ -35,7 +35,7 @@ class Simulator:
         elif action == 4:
             self.fried_agent.x -= 1
 
-        if self.dungeon.floor_map[self.fried_agent.y][self.fried_agent.x] == CellInfo.WALL:
+        if self.map[self.fried_agent.y][self.fried_agent.x] == CellInfo.WALL:
             self.fried_agent.x = before_point[0]
             self.fried_agent.y = before_point[1]
 
