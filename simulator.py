@@ -9,8 +9,12 @@ import numpy as np
 class Simulator:
     def __init__(self, row=30, column=40):
         self.dungeon = Dungeon(row, column)
-        index = random.choice(np.where(self.dungeon.floor_map.reshape(-1) == CellInfo.ROOM)[0])
-        self.fried_agent = Friend(int(index/self.dungeon.floor_map.shape[1]), int(index % self.dungeon.floor_map.shape[1]))
+        first_room: Room = random.choice(self.dungeon.rooms)
+        first_room_map = self.dungeon.floor_map[first_room.origin[0]:first_room.origin[0]+first_room.size[0], first_room.origin[1]:first_room.origin[1]+first_room.size[1]]
+        index = random.choice(np.where(first_room_map.reshape(-1) == CellInfo.ROOM)[0])
+        y = int(index / first_room_map.shape[1] + first_room.origin[0])
+        x = int(index % first_room_map.shape[1] + first_room.origin[1])
+        self.fried_agent = Friend(y, x, id(first_room))
 
         # 保護解除したマップ
         self.map = self.dungeon.floor_map.copy()
