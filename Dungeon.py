@@ -100,6 +100,7 @@ class Dungeon:
         self._connect_rooms()
         self._print_roads2map()
         self.set_protected_area()
+        self._generate_goal()
         self._generate_enemy()
         self.floor_map[self.floor_map == CellInfo.OTHER] = CellInfo.WALL
         self.print_floor_map()
@@ -182,6 +183,14 @@ class Dungeon:
             return False
         self.roads.append(road)
         return True
+
+    def _generate_goal(self):
+        index = random.choice(np.where(self.floor_map.reshape(-1) == CellInfo.ROOM)[0])
+        y = int((index // self.floor_map.shape[1]))
+        x = int((index % self.floor_map.shape[1]))
+
+        self.floor_map[y][x] = CellInfo.GOAL
+        self._protect_around(x, y)
 
     def _generate_enemy(self):
         for room in self.rooms:
