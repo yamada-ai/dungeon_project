@@ -6,6 +6,7 @@ import random
 
 from Road import Road
 from Room import Room, RoomInfo
+from util import FOUR_DIRECTION_VECTOR
 
 
 class CellInfo(Enum):
@@ -48,14 +49,6 @@ def cell2color(cell):
         return ColorSequence.GREEN.value+'  '+ColorSequence.RESET.value
     elif cell == CellInfo.OTHER:
         return ColorSequence.BLACK.value+'  '+ColorSequence.RESET.value
-
-
-FOUR_DIRECTION_VECTOR = (
-    (0, 1),
-    (1, 0),
-    (0, -1),
-    (-1, 0)
-)
 
 
 class Dungeon:
@@ -198,7 +191,7 @@ class Dungeon:
                 y = int((index // room_map.shape[1]) + room.origin[0])
                 x = int((index % room_map.shape[1]) + room.origin[1])
 
-                self.floor_map[y][x] = CellInfo.ENEMY
+                # self.floor_map[y][x] = CellInfo.ENEMY
                 self._protect_around(x, y)
                 room.initial_enemy_positions.append((x, y))
 
