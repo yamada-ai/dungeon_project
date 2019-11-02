@@ -18,6 +18,12 @@
 .road{
   background-color: greenyellow;
 }
+.goal{
+  background-color: green;
+}
 .agent{
   background-color: pink;
+}
+.enemy{
+  background-color: red;
 }
