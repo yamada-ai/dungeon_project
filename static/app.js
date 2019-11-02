@@ -1,7 +1,7 @@
 var app = new Vue({
     el: '#app',
     data: {
-        raw: 'hoge',
+        raw: '',
         id: 'NO DATA',
         map: [],
         floor_map: [[]]
