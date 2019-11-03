@@ -17,7 +17,7 @@ var app = new Vue({
             axios
             .get('/create')
             .then(response => {
-                this.raw = response.data
+                this.raw = response.data;
                 this.id = response.data.id
             });
         },
@@ -35,30 +35,34 @@ var app = new Vue({
             })
         },
         on_keydown(keyCode){
-            console.log(keyCode)
+            console.log(keyCode);
             switch(keyCode){
                 case 65:
                     axios.post('/action/'+this.id, {
                         action: 4
-                    })
-                    break
+                    });
+                    break;
                 case 87:
                     axios.post('/action/' + this.id, {
                         action: 1
-                    })
-                    break
+                    });
+                    break;
                 case 68:
                     axios.post('/action/' + this.id, {
                         action: 2
-                    })
-                    break
+                    });
+                    break;
                 case 83:
                     axios.post('/action/' + this.id, {
                         action: 3
-                    })
-                    break
+                    });
+                    break;
+                case 74:
+                    axios.post('/action/' + this.id, {
+                        action: 0
+                    });
             }
             this.refresh()
         }
     },
-})
+});

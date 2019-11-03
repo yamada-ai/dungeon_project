@@ -31,7 +31,13 @@ class Simulator:
         before_point = (self.friend_agent.x, self.friend_agent.y)
 
         if action == 0:
-            pass
+            for v in FOUR_DIRECTION_VECTOR:
+                x = self.friend_agent.x + v[0]
+                y = self.friend_agent.y + v[1]
+                e = [enemy for enemy in self.enemy_list if enemy.x == x and enemy.y == y]
+                if len(e) >= 1:
+                    self.enemy_list.remove(e[0])
+                    break
         elif action == 1:
             self.friend_agent.y -= 1
         elif action == 2:
