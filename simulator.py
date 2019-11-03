@@ -17,7 +17,7 @@ class Simulator:
         index = random.choice(np.where(first_room_map.reshape(-1) == CellInfo.ROOM)[0])
         y = int(index / first_room_map.shape[1] + first_room.origin[0])
         x = int(index % first_room_map.shape[1] + first_room.origin[1])
-        self.fried_agent = Friend(y, x, first_room.id)
+        self.friend_agent = Friend(y, x, first_room.id)
 
         # 保護解除したマップ
         self.map = self.dungeon.floor_map.copy()
@@ -30,32 +30,32 @@ class Simulator:
                 self.enemy_list.append(Enemy(p[0], p[1]))
 
     def action(self, action):
-        before_point = (self.fried_agent.x, self.fried_agent.y)
+        before_point = (self.friend_agent.x, self.friend_agent.y)
 
         if action == 0:
             pass
         elif action == 1:
-            self.fried_agent.y -= 1
+            self.friend_agent.y -= 1
         elif action == 2:
-            self.fried_agent.x += 1
+            self.friend_agent.x += 1
         elif action == 3:
-            self.fried_agent.y += 1
+            self.friend_agent.y += 1
         elif action == 4:
-            self.fried_agent.x -= 1
+            self.friend_agent.x -= 1
 
-        if self.map[self.fried_agent.y][self.fried_agent.x] == CellInfo.WALL:
-            self.fried_agent.x = before_point[0]
-            self.fried_agent.y = before_point[1]
-        if self.map[self.fried_agent.y][self.fried_agent.x] == CellInfo.ROAD:
-            road = [road for road in self.dungeon.rooms[self.fried_agent.map_id].roads if
-                    (self.fried_agent.x, self.fried_agent.y) in road.ends][0]
-            end_position = [end for end in road.ends if end != (self.fried_agent.x, self.fried_agent.y)][0]
+        if self.map[self.friend_agent.y][self.friend_agent.x] == CellInfo.WALL:
+            self.friend_agent.x = before_point[0]
+            self.friend_agent.y = before_point[1]
+        if self.map[self.friend_agent.y][self.friend_agent.x] == CellInfo.ROAD:
+            road = [road for road in self.dungeon.rooms[self.friend_agent.map_id].roads if
+                    (self.friend_agent.x, self.friend_agent.y) in road.ends][0]
+            end_position = [end for end in road.ends if end != (self.friend_agent.x, self.friend_agent.y)][0]
             for v in FOUR_DIRECTION_VECTOR:
                 if self.map[end_position[1] + v[1], end_position[0] + v[0]] == CellInfo.ROOM:
-                    self.fried_agent.x = end_position[0] + v[0]
-                    self.fried_agent.y = end_position[1] + v[1]
-                    self.fried_agent.map_id = \
-                        [room for room in road.connected_rooms if room.id != self.fried_agent.map_id][0].id
+                    self.friend_agent.x = end_position[0] + v[0]
+                    self.friend_agent.y = end_position[1] + v[1]
+                    self.friend_agent.map_id = \
+                        [room for room in road.connected_rooms if room.id != self.friend_agent.map_id][0].id
                     break
 
         self.enemy_action()
@@ -74,7 +74,7 @@ class Simulator:
             y2 = y + v[1]
             if self.map[y2][x2] != CellInfo.ROOM:
                 continue
-            distance = abs(self.fried_agent.x - x2) + abs(self.fried_agent.y - y2)
+            distance = abs(self.friend_agent.x - x2) + abs(self.friend_agent.y - y2)
             if distance == m:
                 list_.append((x2, y2))
             elif distance < m:
@@ -88,8 +88,8 @@ class Simulator:
         return {
             'map': [[e.value for e in line] for line in self.map],
             'agent': {
-                'x': self.fried_agent.x,
-                'y': self.fried_agent.y,
+                'x': self.friend_agent.x,
+                'y': self.friend_agent.y,
             },
             'enemies': [{'x': enemy.x, 'y': enemy.y} for enemy in self.enemy_list]
         }
