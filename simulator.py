@@ -68,6 +68,9 @@ class Simulator:
                     break
             self.load_enemy(self.friend_agent.room_id)
 
+        if self.map[self.friend_agent.y][self.friend_agent.x] == CellInfo.GOAL:
+            self.is_end = True
+
     # 部屋の敵をロード
     def load_enemy(self, room_id):
         self.enemy_list.clear()
