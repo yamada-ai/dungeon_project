@@ -82,7 +82,6 @@ class Simulator:
         for enemy in self.enemy_list:
             action_candidates = self.search(enemy.x, enemy.y)
             next_position_list = []
-            next_next_position_list = []
             distance = 1000000
             for _ in range(len(action_candidates)):
                 action_candidate = heappop(action_candidates)
@@ -92,20 +91,16 @@ class Simulator:
                 else:
                     next_position = (action_candidate[1], action_candidate[2])
                     if action_candidate[0] > distance:
-                        next_next_position_list.append(next_position)
-                        continue
+                        break
                     distance = action_candidate[0]
                     if next_position in enemy_positions:
                         continue
                     next_position_list.append(next_position)
             if next_position_list:
                 next_position = random.choice(next_position_list)
-            else:
-                print('skip')
-                next_position = random.choice(next_next_position_list)
-            enemy.x = next_position[0]
-            enemy.y = next_position[1]
-            enemy_positions.add(next_position)
+                enemy.x = next_position[0]
+                enemy.y = next_position[1]
+                enemy_positions.add(next_position)
 
     def search(self, x, y):
         list_ = []
