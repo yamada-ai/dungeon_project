@@ -26,10 +26,9 @@ var app = new Vue({
             axios
             .get('/info/'+this.id)
             .then(response => {
-                this.raw = response.data
-                this.map = response.data.map
-                this.floor_map = this.map.floor_map
-                this.floor_map[response.data.agent.y][response.data.agent.x] = 3
+                this.raw = response.data;
+                this.floor_map = response.data.map;
+                this.floor_map[response.data.agent.y][response.data.agent.x] = 3;
                 response.data.enemies.forEach(element => {
                     this.floor_map[element.y][element.x] = 4;
                 });

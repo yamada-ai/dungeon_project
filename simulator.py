@@ -86,7 +86,7 @@ class Simulator:
 
     def dump2json(self):
         return {
-            'map': self.dungeon.dump2json(),
+            'map': [[e.value for e in line] for line in self.map],
             'agent': {
                 'x': self.fried_agent.x,
                 'y': self.fried_agent.y,
