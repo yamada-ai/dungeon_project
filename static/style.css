@@ -13,6 +13,12 @@
   border: 1px solid grey;
 }
 
+#isEnd{
+  color: red;
+  font-weight: bold;
+  font-size: large;
+}
+
 .room{
   background-color: cyan;
 }

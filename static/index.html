@@ -15,6 +15,7 @@
     <div>{{ id }}</div>
     <button v-on:click="createSimulator">CREATE</button>
     <button v-on:click="refresh">REFRESH</button>
+    <p v-if="isEnd" id="isEnd">GAME END</p>
     <div id="field">
       <div v-for="line in floor_map" class="line">
         <div v-for="e in line">

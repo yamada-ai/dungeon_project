@@ -3,6 +3,7 @@ var app = new Vue({
     data: {
         raw: '',
         id: 'NO DATA',
+        isEnd: false,
         map: [],
         floor_map: [[]]
     },
@@ -27,6 +28,7 @@ var app = new Vue({
             .get('/info/'+this.id)
             .then(response => {
                 this.raw = response.data;
+                this.isEnd = response.data.isEnd;
                 this.floor_map = response.data.map;
                 this.floor_map[response.data.agent.y][response.data.agent.x] = 3;
                 response.data.enemies.forEach(element => {
@@ -36,6 +38,9 @@ var app = new Vue({
         },
         on_keydown(keyCode){
             console.log(keyCode);
+            if(this.isEnd){
+                return
+            }
             switch(keyCode){
                 case 65:
                     axios.post('/action/'+this.id, {

@@ -10,6 +10,7 @@ import numpy as np
 class Simulator:
     def __init__(self, row=30, column=40):
         self.dungeon = Dungeon(row, column)
+        self.is_end = False
         first_room: Room = random.choice(self.dungeon.rooms)
         first_room_map = self.dungeon.floor_map[
                          first_room.origin[0]:first_room.origin[0] + first_room.size[0],
@@ -77,6 +78,8 @@ class Simulator:
             distance, next_position = self.search(enemy.x, enemy.y)
             enemy.x = next_position[0]
             enemy.y = next_position[1]
+            if distance < 1:
+                self.is_end = True
 
     def search(self, x, y):
         list_ = []
@@ -99,6 +102,7 @@ class Simulator:
     def dump2json(self):
         return {
             'map': [[e.value for e in line] for line in self.map],
+            'isEnd': self.is_end,
             'agent': {
                 'x': self.friend_agent.x,
                 'y': self.friend_agent.y,
