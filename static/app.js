@@ -13,14 +13,14 @@ var app = new Vue({
         }
     },
     methods: {
-        createSimulator: function(){
+        createSimulator: async function () {
             console.log('create');
-            axios
-            .get('/create')
-            .then(response => {
-                this.raw = response.data;
-                this.id = response.data.id
-            });
+            await axios
+                .get('/create')
+                .then(response => {
+                    this.raw = response.data;
+                    this.id = response.data.id
+                });
         },
         refresh: function(){
             console.log('refresh');
@@ -31,6 +31,13 @@ var app = new Vue({
                 this.isEnd = response.data.isEnd;
                 this.floor_map = response.data.map;
                 if(this.isEnd) {
+                    if(this.floor_map[response.data.agent.y][response.data.agent.x] === 5){
+                        (async () => {
+                            await this.createSimulator();
+                            this.refresh();
+                        })();
+                        return
+                    }
                     this.floor_map[response.data.agent.y][response.data.agent.x] = 6;
                 }else{
                     this.floor_map[response.data.agent.y][response.data.agent.x] = 3;
