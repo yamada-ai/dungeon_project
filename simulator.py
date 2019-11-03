@@ -4,6 +4,7 @@ from Room import Room
 from Agent import Friend, Enemy
 from Dungeon import Dungeon, CellInfo
 from util import FOUR_DIRECTION_VECTOR
+from heapq import heappush, heappop
 import numpy as np
 
 
@@ -74,31 +75,45 @@ class Simulator:
             self.enemy_list.append(Enemy(enemy_position[0], enemy_position[1]))
 
     def enemy_action(self):
+        enemy_positions = set()
         for enemy in self.enemy_list:
-            distance, next_position = self.search(enemy.x, enemy.y)
-            if distance < 1:
-                self.is_end = True
+            action_candidates = self.search(enemy.x, enemy.y)
+            next_position_list = []
+            next_next_position_list = []
+            distance = 1000000
+            for _ in range(len(action_candidates)):
+                action_candidate = heappop(action_candidates)
+                if action_candidate[0] == 0:
+                    self.is_end = True
+                    return
+                else:
+                    next_position = (action_candidate[1], action_candidate[2])
+                    if action_candidate[0] > distance:
+                        next_next_position_list.append(next_position)
+                        continue
+                    distance = action_candidate[0]
+                    if next_position in enemy_positions:
+                        continue
+                    next_position_list.append(next_position)
+            if next_position_list:
+                next_position = random.choice(next_position_list)
             else:
-                enemy.x = next_position[0]
-                enemy.y = next_position[1]
+                print('skip')
+                next_position = random.choice(next_next_position_list)
+            enemy.x = next_position[0]
+            enemy.y = next_position[1]
+            enemy_positions.add(next_position)
 
     def search(self, x, y):
         list_ = []
-        m = 1000000000  # 十分に大きな値
         for v in FOUR_DIRECTION_VECTOR:
             x2 = x + v[0]
             y2 = y + v[1]
             if self.map[y2][x2] != CellInfo.ROOM:
                 continue
             distance = abs(self.friend_agent.x - x2) + abs(self.friend_agent.y - y2)
-            if distance == m:
-                list_.append((x2, y2))
-            elif distance < m:
-                list_ = [(x2, y2)]
-                m = distance
-        if list_:
-            return m, random.choice(list_)
-        return 0, (x, y)
+            heappush(list_, (distance, x2, y2))
+        return list_
 
     def dump2json(self):
         return {
