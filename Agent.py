@@ -5,7 +5,7 @@ from dataclasses import dataclass
 class Friend:
     y: int
     x: int
-    map_id: int
+    room_id: int
 
 
 @dataclass

@@ -45,17 +45,17 @@ class Simulator:
             self.friend_agent.x = before_point[0]
             self.friend_agent.y = before_point[1]
         if self.map[self.friend_agent.y][self.friend_agent.x] == CellInfo.ROAD:
-            road = [road for road in self.dungeon.rooms[self.friend_agent.map_id].roads if
+            road = [road for road in self.dungeon.rooms[self.friend_agent.room_id].roads if
                     (self.friend_agent.x, self.friend_agent.y) in road.ends][0]
             end_position = [end for end in road.ends if end != (self.friend_agent.x, self.friend_agent.y)][0]
             for v in FOUR_DIRECTION_VECTOR:
                 if self.map[end_position[1] + v[1], end_position[0] + v[0]] == CellInfo.ROOM:
                     self.friend_agent.x = end_position[0] + v[0]
                     self.friend_agent.y = end_position[1] + v[1]
-                    self.friend_agent.map_id = \
-                        [room for room in road.connected_rooms if room.id != self.friend_agent.map_id][0].id
+                    self.friend_agent.room_id = \
+                        [room for room in road.connected_rooms if room.id != self.friend_agent.room_id][0].id
                     break
-            self.load_enemy(self.friend_agent.map_id)
+            self.load_enemy(self.friend_agent.room_id)
 
         self.enemy_action()
 
