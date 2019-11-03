@@ -76,10 +76,11 @@ class Simulator:
     def enemy_action(self):
         for enemy in self.enemy_list:
             distance, next_position = self.search(enemy.x, enemy.y)
-            enemy.x = next_position[0]
-            enemy.y = next_position[1]
             if distance < 1:
                 self.is_end = True
+            else:
+                enemy.x = next_position[0]
+                enemy.y = next_position[1]
 
     def search(self, x, y):
         list_ = []

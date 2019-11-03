@@ -30,7 +30,11 @@ var app = new Vue({
                 this.raw = response.data;
                 this.isEnd = response.data.isEnd;
                 this.floor_map = response.data.map;
-                this.floor_map[response.data.agent.y][response.data.agent.x] = 3;
+                if(this.isEnd) {
+                    this.floor_map[response.data.agent.y][response.data.agent.x] = 6;
+                }else{
+                    this.floor_map[response.data.agent.y][response.data.agent.x] = 3;
+                }
                 response.data.enemies.forEach(element => {
                     this.floor_map[element.y][element.x] = 4;
                 });

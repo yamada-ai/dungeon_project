@@ -34,3 +34,6 @@
 .enemy{
   background-color: red;
 }
+.dead{
+  background: #b3a7f8;
+}
