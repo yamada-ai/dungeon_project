@@ -25,9 +25,7 @@ class Simulator:
         self.map[self.map == CellInfo.ENEMY] = CellInfo.ROOM
 
         self.enemy_list = []
-        for room in self.dungeon.rooms:
-            for p in room.initial_enemy_positions:
-                self.enemy_list.append(Enemy(p[0], p[1]))
+        self.load_enemy(first_room.id)
 
     def action(self, action):
         before_point = (self.friend_agent.x, self.friend_agent.y)
@@ -57,8 +55,15 @@ class Simulator:
                     self.friend_agent.map_id = \
                         [room for room in road.connected_rooms if room.id != self.friend_agent.map_id][0].id
                     break
+            self.load_enemy(self.friend_agent.map_id)
 
         self.enemy_action()
+
+    # 部屋の敵をロード
+    def load_enemy(self, room_id):
+        self.enemy_list.clear()
+        for enemy_position in self.dungeon.rooms[room_id].initial_enemy_positions:
+            self.enemy_list.append(Enemy(enemy_position[0], enemy_position[1]))
 
     def enemy_action(self):
         for enemy in self.enemy_list:
