@@ -44,6 +44,9 @@ class Simulator:
         if self.map[self.friend_agent.y][self.friend_agent.x] == CellInfo.WALL:
             self.friend_agent.x = before_point[0]
             self.friend_agent.y = before_point[1]
+
+        self.enemy_action()
+
         if self.map[self.friend_agent.y][self.friend_agent.x] == CellInfo.ROAD:
             road = [road for road in self.dungeon.rooms[self.friend_agent.room_id].roads if
                     (self.friend_agent.x, self.friend_agent.y) in road.ends][0]
@@ -56,8 +59,6 @@ class Simulator:
                         [room for room in road.connected_rooms if room.id != self.friend_agent.room_id][0].id
                     break
             self.load_enemy(self.friend_agent.room_id)
-
-        self.enemy_action()
 
     # 部屋の敵をロード
     def load_enemy(self, room_id):
