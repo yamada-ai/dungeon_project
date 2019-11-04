@@ -23,6 +23,19 @@
         </div>
       </div>
     </div>
+    <div id="input">
+      <div class="cross-button">
+        <button class="up-button" v-on:click="up">↑</button>
+        <button class="down-button" v-on:click="down">↓</button>
+        <button class="left-button" v-on:click="left">←</button>
+        <button class="right-button" v-on:click="down">→</button>
+      </div>
+      <div>
+        <div class="cross-button">
+          <button class="center-button">A</button>
+        </div>
+      </div>
+    </div>
     <div>{{ raw }}</div>
   </div>
   <script src="app.js"></script>

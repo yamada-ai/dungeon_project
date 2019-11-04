@@ -47,6 +47,36 @@ var app = new Vue({
                 });
             })
         },
+        up: function(){
+            axios.post('/action/' + this.id, {
+                action: 1
+            });
+            this.refresh();
+        },
+        down: function(){
+            axios.post('/action/' + this.id, {
+                action: 3
+            });
+            this.refresh();
+        },
+        left: function(){
+            axios.post('/action/' + this.id, {
+                action: 4
+            });
+            this.refresh();
+        },
+        right: function(){
+            axios.post('/action/' + this.id, {
+                action: 2
+            });
+            this.refresh();
+        },
+        attack: function(){
+            axios.post('/action/' + this.id, {
+                action: 0
+            });
+            this.refresh();
+        },
         on_keydown(keyCode){
             console.log(keyCode);
             if(this.isEnd){
@@ -54,31 +84,21 @@ var app = new Vue({
             }
             switch(keyCode){
                 case 65:
-                    axios.post('/action/'+this.id, {
-                        action: 4
-                    });
+                    this.left();
                     break;
                 case 87:
-                    axios.post('/action/' + this.id, {
-                        action: 1
-                    });
+                    this.up();
                     break;
                 case 68:
-                    axios.post('/action/' + this.id, {
-                        action: 2
-                    });
+                    this.right();
                     break;
                 case 83:
-                    axios.post('/action/' + this.id, {
-                        action: 3
-                    });
+                    this.down();
                     break;
                 case 74:
-                    axios.post('/action/' + this.id, {
-                        action: 0
-                    });
+                    this.attack();
+                    break;
             }
-            this.refresh()
         }
     },
 });
