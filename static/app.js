@@ -22,60 +22,53 @@ var app = new Vue({
                     this.id = response.data.id
                 });
         },
+        setData: function(data){
+            this.raw = data;
+            this.isEnd = data.isEnd;
+            this.floor_map = data.map;
+            if (this.isEnd) {
+                if (this.floor_map[data.agent.y][data.agent.x] === 5) {
+                    (async () => {
+                        await this.createSimulator();
+                        this.refresh();
+                    })();
+                    return
+                }
+                this.floor_map[data.agent.y][data.agent.x] = 6;
+            } else {
+                this.floor_map[data.agent.y][data.agent.x] = 3;
+            }
+            data.enemies.forEach(element => {
+                this.floor_map[element.y][element.x] = 4;
+            });
+        },
         refresh: function(){
             console.log('refresh');
             axios
             .get('/info/'+this.id)
             .then(response => {
-                this.raw = response.data;
-                this.isEnd = response.data.isEnd;
-                this.floor_map = response.data.map;
-                if(this.isEnd) {
-                    if(this.floor_map[response.data.agent.y][response.data.agent.x] === 5){
-                        (async () => {
-                            await this.createSimulator();
-                            this.refresh();
-                        })();
-                        return
-                    }
-                    this.floor_map[response.data.agent.y][response.data.agent.x] = 6;
-                }else{
-                    this.floor_map[response.data.agent.y][response.data.agent.x] = 3;
-                }
-                response.data.enemies.forEach(element => {
-                    this.floor_map[element.y][element.x] = 4;
-                });
+                this.setData(response.data);
             })
         },
-        up: function(){
-            axios.post('/action/' + this.id, {
-                action: 1
+        postAction: function(data){
+            axios.post('/action/'+this.id, data).then(response => {
+                this.setData(response.data);
             });
-            this.refresh();
+        },
+        up: function(){
+            this.postAction({ action: 1 });
         },
         down: function(){
-            axios.post('/action/' + this.id, {
-                action: 3
-            });
-            this.refresh();
+            this.postAction({ action: 3 });
         },
         left: function(){
-            axios.post('/action/' + this.id, {
-                action: 4
-            });
-            this.refresh();
+            this.postAction({ action: 4 });
         },
         right: function(){
-            axios.post('/action/' + this.id, {
-                action: 2
-            });
-            this.refresh();
+            this.postAction({ action: 2 });
         },
         attack: function(){
-            axios.post('/action/' + this.id, {
-                action: 0
-            });
-            this.refresh();
+            this.postAction({ action: 0 });
         },
         on_keydown(keyCode){
             console.log(keyCode);

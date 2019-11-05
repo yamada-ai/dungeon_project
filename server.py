@@ -40,6 +40,7 @@ def get_dungeon_info(_id: int = -1):
 def action(_id: int):
     data = request.json
     simulators[_id].action(data['action'])
+    return simulators[_id].dump2json()
 
 
 if __name__ == '__main__':
