@@ -12,6 +12,18 @@ class Simulator:
     def __init__(self, row=30, column=40):
         self.dungeon = Dungeon(row, column)
         self.is_end = False
+        self.friend_agent = None
+
+        # 保護解除したマップ
+        self.map = self.dungeon.floor_map.copy()
+        self.map[self.map == CellInfo.PROTECTED] = CellInfo.ROOM
+        self.map[self.map == CellInfo.ENEMY] = CellInfo.ROOM
+
+        self.enemy_list = []
+        self.reset()
+
+    def reset(self):
+        self.is_end = False
         first_room: Room = random.choice(self.dungeon.rooms)
         first_room_map = self.dungeon.floor_map[
                          first_room.origin[0]:first_room.origin[0] + first_room.size[0],
@@ -20,13 +32,6 @@ class Simulator:
         y = int(index / first_room_map.shape[1] + first_room.origin[0])
         x = int(index % first_room_map.shape[1] + first_room.origin[1])
         self.friend_agent = Friend(y, x, first_room.id)
-
-        # 保護解除したマップ
-        self.map = self.dungeon.floor_map.copy()
-        self.map[self.map == CellInfo.PROTECTED] = CellInfo.ROOM
-        self.map[self.map == CellInfo.ENEMY] = CellInfo.ROOM
-
-        self.enemy_list = []
         self.load_enemy(first_room.id)
 
     def action(self, action):
