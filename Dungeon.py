@@ -9,6 +9,7 @@ from Room import Room, RoomInfo
 from util import FOUR_DIRECTION_VECTOR
 
 
+# 各マスの種類を指す
 class CellInfo(Enum):
     WALL = 0
     ROOM = 1
@@ -32,6 +33,7 @@ class ColorSequence(Enum):
     RESET = '\033[0m'
 
 
+# 各マスの情報をコンソール出力用の色に変換
 def cell2color(cell):
     if cell == CellInfo.WALL:
         return ColorSequence.WHITE.value+'  '+ColorSequence.RESET.value
@@ -155,6 +157,7 @@ class Dungeon:
         for i, room_data in enumerate(self.room_info):
             self.rooms.append(Room(room_data.top, room_data.left, room_data.bottom, room_data.right, i))
 
+    # マップに部屋のマスを描画
     def _print_rooms2map(self):
         for room in self.rooms:
             room.print_to_map(self.floor_map)
@@ -191,19 +194,23 @@ class Dungeon:
                 y = int((index // room_map.shape[1]) + room.origin[0])
                 x = int((index % room_map.shape[1]) + room.origin[1])
 
+                # 敵の位置のマスをマップに設定して，その周囲を保護マスにする
                 self.floor_map[y][x] = CellInfo.ENEMY
                 self._protect_around(x, y)
                 room.initial_enemy_positions.append((x, y))
 
+    # 指定したマスの周囲4マスを保護マスにする
     def _protect_around(self, x: int, y: int):
         for v in FOUR_DIRECTION_VECTOR:
             if self.floor_map[y+v[1]][x+v[0]] == CellInfo.ROOM:
                 self.floor_map[y+v[1]][x+v[0]] = CellInfo.PROTECTED
 
+    # マップに道のマス情報を描画
     def _print_roads2map(self):
         for road in self.roads:
             road.print2map(self.floor_map)
 
+    # マップ情報を標準出力
     def print_floor_map(self):
         for row in self.floor_map:
             for column in row:
