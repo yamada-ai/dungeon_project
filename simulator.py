@@ -8,6 +8,41 @@ from heapq import heappush, heappop
 import numpy as np
 
 
+class RoomGraphSimulator:
+    def __init__(self):
+        self.dungeon = Dungeon(30, 40)
+        self.is_end = False
+
+        # 部屋のグラフを指す隣接行列
+        self.map = [[0]*5 for _ in range(5)]
+        for road in self.dungeon.roads:
+            room1_id = road.connected_rooms[0].id
+            room2_id = road.connected_rooms[1].id
+            self.map[room1_id][room2_id] = len(road.cells)
+            self.map[room2_id][room1_id] = len(road.cells)
+
+        self.goal_room_id = self.dungeon.goal_room_index
+
+        self.first_room_index_candidate = set(range(5)).remove(self.goal_room_id)
+        self.agent_room_id = random.choice(self.first_room_index_candidate)
+
+    def reset(self):
+        self.is_end = False
+        self.agent_room_id = random.choice(self.first_room_index_candidate)
+
+    def info(self):
+        return {
+            "room_id": self.agent_room_id,
+        }
+
+    def action(self, action):
+        if self.map[self.agent_room_id][action] == 0:
+            return -100
+        elif action == self.goal_room_id:
+            return 100
+        return -self.map[self.agent_room_id][action]
+
+
 class Simulator:
     def __init__(self, row=30, column=40):
         self.dungeon = Dungeon(row, column)

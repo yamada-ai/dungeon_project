@@ -95,7 +95,7 @@ class Dungeon:
         self._connect_rooms()
         self._print_roads2map()
         self.set_protected_area()
-        self._generate_goal()
+        self.goal_room_index = self._generate_goal()
         self._generate_enemy()
         self.floor_map[self.floor_map == CellInfo.OTHER] = CellInfo.WALL
         self.print_floor_map()
@@ -180,15 +180,19 @@ class Dungeon:
         return True
 
     def _generate_goal(self):
-        index = random.choice(np.where(self.floor_map.reshape(-1) == CellInfo.ROOM)[0])
-        y = int((index // self.floor_map.shape[1]))
-        x = int((index % self.floor_map.shape[1]))
+        room_index = random.randint(0, 4)
+        goal_room = self.rooms[room_index]
+        room_map = self._get_room_map(goal_room)
+        index = random.choice(np.where(room_map.reshape(-1) == CellInfo.ROOM)[0])
+        y = int((index // room_map.shape[1])) + goal_room.origin[0]
+        x = int((index % room_map.shape[1])) + goal_room.origin[1]
 
         self.floor_map[y][x] = CellInfo.GOAL
+        return room_index
 
     def _generate_enemy(self):
         for room in self.rooms:
-            room_map = self.floor_map[room.origin[0]:room.origin[0]+room.size[0], room.origin[1]:room.origin[1]+room.size[1]]
+            room_map = self._get_room_map(room)
             for _ in range(2):
                 index = random.choice(np.where(room_map.reshape(-1) == CellInfo.ROOM)[0])
                 y = int((index // room_map.shape[1]) + room.origin[0])
@@ -198,6 +202,9 @@ class Dungeon:
                 self.floor_map[y][x] = CellInfo.ENEMY
                 self._protect_around(x, y)
                 room.initial_enemy_positions.append((x, y))
+
+    def _get_room_map(self, room):
+        return self.floor_map[room.origin[0]:room.origin[0]+room.size[0], room.origin[1]:room.origin[1]+room.size[1]]
 
     # 指定したマスの周囲4マスを保護マスにする
     def _protect_around(self, x: int, y: int):
