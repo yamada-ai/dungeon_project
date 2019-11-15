@@ -83,7 +83,11 @@ class CellMoveSimulator(Simulator):
         self.friend_agent = Friend(y, x, first_room.id)
         self._load_enemy(first_room.id)
 
-    def action(self, action, next_room_id):
+    def action(self, action):
+        next_room_id = -1
+        if type(action) == dict:
+            action = action['action']
+            next_room_id = action['next_room_id']
         before_point = (self.friend_agent.x, self.friend_agent.y)
 
         if action == 0:
