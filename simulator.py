@@ -40,8 +40,11 @@ class RoomGraphSimulator:
         if self.map[self.agent_room_id][action] == 0:
             return -100
         elif action == self.goal_room_id:
+            self.agent_room_id = action
             return 100
-        return -self.map[self.agent_room_id][action]
+        reward = -self.map[self.agent_room_id][action]
+        self.agent_room_id = action
+        return reward
 
 
 class CellMoveSimulator:
