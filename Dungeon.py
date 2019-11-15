@@ -182,7 +182,7 @@ class Dungeon:
     def _generate_goal(self):
         room_index = random.randint(0, 4)
         goal_room = self.rooms[room_index]
-        room_map = self._get_room_map(goal_room)
+        room_map = self.get_room_map(goal_room)
         index = random.choice(np.where(room_map.reshape(-1) == CellInfo.ROOM)[0])
         y = int((index // room_map.shape[1])) + goal_room.origin[0]
         x = int((index % room_map.shape[1])) + goal_room.origin[1]
@@ -192,7 +192,7 @@ class Dungeon:
 
     def _generate_enemy(self):
         for room in self.rooms:
-            room_map = self._get_room_map(room)
+            room_map = self.get_room_map(room)
             for _ in range(2):
                 index = random.choice(np.where(room_map.reshape(-1) == CellInfo.ROOM)[0])
                 y = int((index // room_map.shape[1]) + room.origin[0])
@@ -203,7 +203,7 @@ class Dungeon:
                 self._protect_around(x, y)
                 room.initial_enemy_positions.append((x, y))
 
-    def _get_room_map(self, room):
+    def get_room_map(self, room):
         return self.floor_map[room.origin[0]:room.origin[0]+room.size[0], room.origin[1]:room.origin[1]+room.size[1]]
 
     # 指定したマスの周囲4マスを保護マスにする
