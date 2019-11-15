@@ -23,7 +23,8 @@ class RoomGraphSimulator:
 
         self.goal_room_id = self.dungeon.goal_room_index
 
-        self.first_room_index_candidate = set(range(5)).remove(self.goal_room_id)
+        self.first_room_index_candidate = list(range(5))
+        self.first_room_index_candidate.remove(self.goal_room_id)
         self.agent_room_id = random.choice(self.first_room_index_candidate)
 
     def reset(self):
