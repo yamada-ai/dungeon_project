@@ -8,7 +8,18 @@ from heapq import heappush, heappop
 import numpy as np
 
 
-class RoomGraphSimulator:
+class Simulator:
+    def reset(self):
+        pass
+
+    def info(self):
+        pass
+
+    def action(self, action):
+        pass
+
+
+class RoomGraphSimulator(Simulator):
     def __init__(self):
         self.dungeon = Dungeon(30, 40)
         self.is_end = False
@@ -48,7 +59,7 @@ class RoomGraphSimulator:
         return reward
 
 
-class CellMoveSimulator:
+class CellMoveSimulator(Simulator):
     def __init__(self):
         self.dungeon = Dungeon(30, 40)
         self.is_end = False
@@ -181,7 +192,7 @@ class CellMoveSimulator:
         return x, y
 
 
-class Simulator:
+class Simulator2:
     def __init__(self, row=30, column=40):
         self.dungeon = Dungeon(row, column)
         self.is_end = False
