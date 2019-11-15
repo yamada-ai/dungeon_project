@@ -34,6 +34,7 @@ class RoomGraphSimulator:
     def info(self):
         return {
             "room_id": self.agent_room_id,
+            "map": self.map
         }
 
     def action(self, action):
