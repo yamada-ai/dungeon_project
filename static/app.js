@@ -2,6 +2,7 @@ var app = new Vue({
     el: '#app',
     data: {
         mode: "2",
+        seed: -1,
         raw: '',
         id: 'NO DATA',
         isEnd: false,
@@ -19,6 +20,9 @@ var app = new Vue({
             let data = {
                 mode: parseInt(this.mode)
             };
+            if(this.seed !== -1){
+                data['seed'] = parseInt(this.seed);
+            }
             await axios
                 .post('/init', data)
                 .then(response => {
