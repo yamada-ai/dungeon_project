@@ -22,7 +22,7 @@ def init():
     seed = data.get('seed', None)
     mode = data['mode']
     if seed is not None:
-        random.seed = seed
+        random.seed(seed)
 
     if mode == 1:
         simulator = RoomGraphSimulator()
