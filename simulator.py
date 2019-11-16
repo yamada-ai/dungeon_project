@@ -44,7 +44,7 @@ class RoomGraphSimulator(Simulator):
 
     def info(self):
         return {
-            "room_id": self.agent_room_id,
+            "roomId": self.agent_room_id,
             "map": self.map
         }
 
@@ -88,7 +88,7 @@ class CellMoveSimulator(Simulator):
         next_room_id = -1
         if type(action) == dict:
             action = action['action']
-            next_room_id = action['next_room_id']
+            next_room_id = action['nextRoomId']
         before_point = (self.friend_agent.x, self.friend_agent.y)
 
         if action == 0:
@@ -182,7 +182,7 @@ class CellMoveSimulator(Simulator):
         agent_position_inner_room = self._get_agent_position_inner_room()
         return {
             "isEnd": self.is_end,
-            "room_id": self.friend_agent.room_id,
+            "roomId": self.friend_agent.room_id,
             "x": agent_position_inner_room[0],
             "y": agent_position_inner_room[1],
             "enemies": [

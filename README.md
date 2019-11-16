@@ -30,12 +30,12 @@ GET
 response
 ```json
 {
-  "room_id": int,
+  "roomId": int,
 }
 ```
 ```json
 {
-  "room_id": int,
+  "roomId": int,
   "x": int,
   "y": int,
   "enemies": [
@@ -43,7 +43,16 @@ response
       "x": int,
       "y": int,
     }
+  ],
+"map": {
+  "cells": list[list[int]],
+  "rooms": [
+    {
+      "id": int,
+      "origin": 
+    }
   ]
+}
 }
 ```
 
@@ -59,7 +68,7 @@ request
 {
   "action": {
     "action": int,
-    "next_room_id": int,
+    "nextRoomId": int,
   }
 }
 ```
@@ -67,13 +76,13 @@ response
 ```json
 {
   "reward": float,
-  "room_id": int,
+  "roomId": int,
 }
 ```
 ```json
 {
   "reward": float,
-  "room_id": int,
+  "roomId": int,
   "x": int,
   "y": int,
   "enemies": [
@@ -81,7 +90,10 @@ response
       "x": int,
       "y": int,
     }
-  ]
+  ],
+  "map": {
+    
+  }
 }
 ```
 
