@@ -66,6 +66,7 @@ class CellMoveSimulator(Simulator):
 
         self.map = self.dungeon.floor_map.copy()
         self.map[self.map == CellInfo.PROTECTED] = CellInfo.ROOM
+        self.map[self.map == CellInfo.ENEMY] = CellInfo.ROOM
 
         self.enemy_list = [
             Enemy(0, 0),
@@ -129,7 +130,8 @@ class CellMoveSimulator(Simulator):
                         [room for room in road.connected_rooms if room.id != self.friend_agent.room_id][0].id
                     break
             self._load_enemy(self.friend_agent.room_id)
-            return 20
+            if self.friend_agent.room_id == next_room_id:
+                return 20
 
         if self.map[self.friend_agent.y][self.friend_agent.x] == CellInfo.GOAL:
             self.is_end = True
@@ -179,15 +181,20 @@ class CellMoveSimulator(Simulator):
     def info(self):
         agent_position_inner_room = self._get_agent_position_inner_room()
         return {
+            "isEnd": self.is_end,
             "room_id": self.friend_agent.room_id,
             "x": agent_position_inner_room[0],
             "y": agent_position_inner_room[1],
-            "enemy": [
+            "enemies": [
                 {
                     "x": e.x,
                     "y": e.y
                 } for e in self.enemy_list
-            ]
+            ],
+            "map": {
+                "cells": [[e.value for e in line] for line in self.map],
+                "rooms": [room.info() for room in self.dungeon.rooms],
+            }
         }
 
     def _get_agent_position_inner_room(self):

@@ -1,6 +1,7 @@
+import random
 from typing import Dict
 from bottle import *
-from simulator import Simulator
+from simulator import Simulator, RoomGraphSimulator, CellMoveSimulator, Simulator2
 
 simulators: Dict[int, Simulator] = {}
 
@@ -15,32 +16,43 @@ def file(filename):
     return static_file(filename, './static')
 
 
-@get('/create')
-def create_dungeon():
-    simulator = Simulator(30, 40)
+@post('/init')
+def init():
+    data = request.json
+    seed = data.get('seed', None)
+    mode = data['mode']
+    if seed is not None:
+        random.seed = seed
+
+    if mode == 1:
+        simulator = RoomGraphSimulator()
+    elif mode == 2:
+        simulator = CellMoveSimulator()
+    else:
+        simulator = Simulator2()
     simulators[id(simulator)] = simulator
     return {'id': id(simulator)}
 
 
-@get('/info')
 @get('/info/<_id:int>')
 def get_dungeon_info(_id: int = -1):
-    # デバッグ用
-    if _id == -1:
-        return {
-            'simulators': [sim.dump2json() for sim in simulators.values()]
-        }
-
     if simulators.get(_id, None) is None:
         return {}
-    return simulators[_id].dump2json()
+    return simulators[_id].info()
 
 
 @post('/action/<_id:int>')
 def action(_id: int):
     data = request.json
-    simulators[_id].action(data['action'])
-    return simulators[_id].dump2json()
+    reward = simulators[_id].action(data['action'])
+    info = simulators[_id].info()
+    info['reward'] = reward
+    return info
+
+
+@post('/reset/<_id:int>')
+def reset(_id: int):
+    simulators[_id].reset()
 
 
 if __name__ == '__main__':

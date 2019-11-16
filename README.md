@@ -38,7 +38,7 @@ response
   "room_id": int,
   "x": int,
   "y": int,
-  "enemy": [
+  "enemies": [
     {
       "x": int,
       "y": int,
@@ -57,7 +57,10 @@ request
 ```
 ```json
 {
-  "action": int, // 行動 
+  "action": {
+    "action": int,
+    "next_room_id": int,
+  }
 }
 ```
 response
@@ -73,7 +76,7 @@ response
   "room_id": int,
   "x": int,
   "y": int,
-  "enemy": [
+  "enemies": [
     {
       "x": int,
       "y": int,
