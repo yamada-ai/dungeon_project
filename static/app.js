@@ -38,11 +38,7 @@ var app = new Vue({
             let room = data.map.rooms[data.roomId];
             if (this.isEnd) {
                 if (this.floor_map[data.y + room.origin[0]][data.x + room.origin[1]] === 5) {
-                    (async () => {
-                        // await this.createSimulator();
-                        await axios.post("/reset/" + this.id)
-                        this.refresh();
-                    })();
+                    this.reset();
                     return
                 }
                 this.floor_map[data.y + room.origin[0]][data.x + room.origin[1]] = 6;
@@ -54,6 +50,12 @@ var app = new Vue({
                     this.floor_map[element.y][element.x] = 4;
                 }
             });
+        },
+        reset: function(){
+            (async () => {
+                await axios.post('/reset/' + this.id);
+                this.refresh();
+            })();
         },
         refresh: function(){
             axios
