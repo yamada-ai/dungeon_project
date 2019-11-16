@@ -12,7 +12,15 @@
 </head>
 <body>
   <div id="app">
+    <input type="radio" id="1" value="1" v-model="mode">
+    <label for="1">1</label>
+    <input type="radio" id="2" value="2" v-model="mode">
+    <label for="2">2</label>
+    <input type="radio" id="3" value="3" v-model="mode">
+    <label for="3">3</label>
+
     <div>{{ id }}</div>
+    <div>{{ reward }}</div>
     <button v-on:click="createSimulator">CREATE</button>
     <button v-on:click="refresh">REFRESH</button>
     <p v-if="isEnd" id="isEnd">GAME END</p>
