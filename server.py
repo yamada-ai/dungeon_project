@@ -55,5 +55,17 @@ def reset(_id: int):
     simulators[_id].reset()
 
 
+@get('/log/list')
+def log_list():
+    return {
+        'list': sorted([f for f in os.listdir('log/') if f[-4:] == '.log'], reverse=True)
+    }
+
+
+@get('/log/<filename>')
+def log_file(filename: str):
+    return static_file(filename, './log')
+
+
 if __name__ == '__main__':
     run(host='0.0.0.0', port=8080, debug=True, reloader=True)
