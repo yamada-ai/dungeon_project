@@ -63,6 +63,7 @@ class CellMoveSimulator(Simulator):
     def __init__(self):
         self.dungeon = Dungeon(30, 40)
         self.is_end = False
+        self.friend_agent: Friend = None
 
         self.map = self.dungeon.floor_map.copy()
         self.map[self.map == CellInfo.PROTECTED] = CellInfo.ROOM
@@ -187,8 +188,8 @@ class CellMoveSimulator(Simulator):
             "y": agent_position_inner_room[1],
             "enemies": [
                 {
-                    "x": e.x,
-                    "y": e.y
+                    "x": max(e.x - self.dungeon.rooms[self.friend_agent.room_id].origin[1], -1),
+                    "y": max(e.y - self.dungeon.rooms[self.friend_agent.room_id].origin[0], -1),
                 } for e in self.enemy_list
             ],
             "map": {
