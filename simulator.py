@@ -66,6 +66,7 @@ class CellMoveSimulator(Simulator):
         self.dungeon = Dungeon(30, 40)
         self.is_end = False
         self.friend_agent: Friend = None
+        self.turn = 0
 
         self.map = self.dungeon.floor_map.copy()
         self.map[self.map == CellInfo.PROTECTED] = CellInfo.ROOM
@@ -79,6 +80,7 @@ class CellMoveSimulator(Simulator):
 
     def reset(self):
         self.is_end = False
+        self.turn = 0
         first_room: Room = random.choice(self.dungeon.rooms)
         first_room_map = self.dungeon.get_room_map(first_room)
         index = random.choice(np.where(first_room_map.reshape(-1) == CellInfo.ROOM)[0])
@@ -90,8 +92,8 @@ class CellMoveSimulator(Simulator):
     def action(self, action):
         next_room_id = -1
         if type(action) == dict:
-            action = action['action']
             next_room_id = action['nextRoomId']
+            action = action['action']
         before_point = (self.friend_agent.x, self.friend_agent.y)
 
         if action == 0:
@@ -139,6 +141,11 @@ class CellMoveSimulator(Simulator):
         if self.map[self.friend_agent.y][self.friend_agent.x] == CellInfo.GOAL:
             self.is_end = True
             return 100
+
+        if self.turn > 1500:
+            self.is_end = True
+            return -100
+        self.turn += 1
 
     def _load_enemy(self, room_id):
         for p, e in zip(self.dungeon.rooms[room_id].initial_enemy_positions, self.enemy_list):
