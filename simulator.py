@@ -146,6 +146,7 @@ class CellMoveSimulator(Simulator):
             self.is_end = True
             return -100
         self.turn += 1
+        return -1
 
     def _load_enemy(self, room_id):
         for p, e in zip(self.dungeon.rooms[room_id].initial_enemy_positions, self.enemy_list):
