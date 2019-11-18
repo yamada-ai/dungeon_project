@@ -46,7 +46,10 @@ def action(_id: int):
     data = request.json
     reward = simulators[_id].action(data['action'])
     info = simulators[_id].info()
-    info['reward'] = reward
+    if reward is None:
+        info['reward'] = 0
+    else:
+        info['reward'] = reward
     return info
 
 
