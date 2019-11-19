@@ -75,8 +75,8 @@ class CellMoveSimulator(Simulator):
         self.map[self.map == CellInfo.ENEMY] = CellInfo.ROOM
 
         self.enemy_list = [
-            Enemy(0, 0),
-            Enemy(0, 0)
+            Enemy(-1, -1),
+            Enemy(-1, -1)
         ]
         self.reset()
 
