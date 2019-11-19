@@ -242,3 +242,12 @@ class Simulator2(CellMoveSimulator):
                 'cellMap': [[e.value for e in line] for line in self.map],
                 'moveLog': self.log
             }, file)
+
+    def reset(self):
+        super().reset()
+        self.log.clear()
+        self.log.append({
+            'agent': self.friend_agent.__dict__.copy(),
+            'enemies': [enemy.__dict__.copy() for enemy in self.enemy_list],
+            'action': -1,
+        })
