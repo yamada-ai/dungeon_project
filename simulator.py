@@ -228,7 +228,8 @@ class Simulator2(CellMoveSimulator):
         super().action(action)
         self.log.append({
             'agent': self.friend_agent.__dict__.copy(),
-            'enemies': [enemy.__dict__.copy() for enemy in self.enemy_list]
+            'enemies': [enemy.__dict__.copy() for enemy in self.enemy_list],
+            'action': action,
         })
 
         if self.is_end:
