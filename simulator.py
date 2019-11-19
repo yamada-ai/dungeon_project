@@ -62,11 +62,13 @@ class RoomGraphSimulator(Simulator):
 
 
 class CellMoveSimulator(Simulator):
-    def __init__(self):
+    def __init__(self, param):
         self.dungeon = Dungeon(30, 40)
         self.is_end = False
         self.friend_agent: Friend = None
         self.turn = 0
+
+        self.first_room = param.get('firstRoom', None)
 
         self.map = self.dungeon.floor_map.copy()
         self.map[self.map == CellInfo.PROTECTED] = CellInfo.ROOM
@@ -81,7 +83,10 @@ class CellMoveSimulator(Simulator):
     def reset(self):
         self.is_end = False
         self.turn = 0
-        first_room: Room = random.choice(self.dungeon.rooms)
+        if self.first_room is None or self.first_room < 0:
+            first_room: Room = random.choice(self.dungeon.rooms)
+        else:
+            first_room: Room = self.dungeon.rooms[self.first_room]
         first_room_map = self.dungeon.get_room_map(first_room)
         index = random.choice(np.where(first_room_map.reshape(-1) == CellInfo.ROOM)[0])
         y = int(index / first_room_map.shape[1] + first_room.origin[0])
@@ -215,8 +220,8 @@ class CellMoveSimulator(Simulator):
 
 
 class Simulator2(CellMoveSimulator):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, param):
+        super().__init__(param)
         self.log = []
 
     def action(self, action):

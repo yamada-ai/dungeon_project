@@ -27,9 +27,9 @@ def init():
     if mode == 1:
         simulator = RoomGraphSimulator()
     elif mode == 2:
-        simulator = CellMoveSimulator()
+        simulator = CellMoveSimulator(data)
     else:
-        simulator = Simulator2()
+        simulator = Simulator2(data)
     simulators[id(simulator)] = simulator
     return {'id': id(simulator)}
 
