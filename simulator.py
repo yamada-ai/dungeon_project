@@ -221,8 +221,8 @@ class CellMoveSimulator(Simulator):
 
 class Simulator2(CellMoveSimulator):
     def __init__(self, param):
-        super().__init__(param)
         self.log = []
+        super().__init__(param)
 
     def action(self, action):
         super().action(action)
