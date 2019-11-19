@@ -27,6 +27,7 @@ var app = new Vue({
             });
         },
         getLogData: function(){
+            this.index = 0;
             axios.get('/log/'+this.log).then(response => {
                 this.raw = response.data;
                 this.setAgent();
@@ -67,5 +68,10 @@ var app = new Vue({
                     break;
             }
         },
-    }
+    },
+    watch: {
+        log: function(){
+            this.getLogData();
+        }
+    },
 })
