@@ -1,5 +1,11 @@
 # dungeon_project
 
+## 実行
+```
+$ pip install -r requirements.txt
+$ python server.py
+```
+
 ## 仕様
 
 ### モード
