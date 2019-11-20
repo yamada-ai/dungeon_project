@@ -69,6 +69,8 @@ class CellMoveSimulator(Simulator):
         self.turn = 0
 
         self.first_room = param.get('firstRoom', None)
+        self.no_enemy = param.get('noEnemy', False)
+        self.max_turn = param.get('maxTurn', 1500)
 
         self.map = self.dungeon.floor_map.copy()
         self.map[self.map == CellInfo.PROTECTED] = CellInfo.ROOM
@@ -147,13 +149,15 @@ class CellMoveSimulator(Simulator):
             self.is_end = True
             return 100
 
-        if self.turn > 1500:
+        if self.turn > self.max_turn:
             self.is_end = True
             return -100
         self.turn += 1
         return -1
 
     def _load_enemy(self, room_id):
+        if self.no_enemy:
+            return
         for p, e in zip(self.dungeon.rooms[room_id].initial_enemy_positions, self.enemy_list):
             e.x = p[0]
             e.y = p[1]
