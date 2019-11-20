@@ -127,6 +127,10 @@ class CellMoveSimulator(Simulator):
 
         self._enemy_action()
 
+        if self.turn > self.max_turn:
+            self.is_end = True
+            return -100
+
         if self.is_end:
             return -100
 
@@ -143,15 +147,14 @@ class CellMoveSimulator(Simulator):
                     break
             self._load_enemy(self.friend_agent.room_id)
             if self.friend_agent.room_id == next_room_id:
-                return 20
+                return 100
+            else:
+                return -100
 
         if self.map[self.friend_agent.y][self.friend_agent.x] == CellInfo.GOAL:
             self.is_end = True
             return 100
 
-        if self.turn > self.max_turn:
-            self.is_end = True
-            return -100
         self.turn += 1
         return -1
 
