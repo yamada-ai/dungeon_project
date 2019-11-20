@@ -17,6 +17,7 @@
     <div>{{ log }}</div>
     <button v-on:click="getLogData">GET DATA</button>
     <div>turn: {{ index }}</div>
+    <div>action: {{ action }}</div>
 
     <div id="field">
       <div v-for="line in floor_map" class="line">
@@ -26,7 +27,7 @@
       </div>
     </div>
 
-    <div>{{ raw }}</div>
+    <div id="raw">{{ raw }}</div>
   </div>
   <script src="logView.js"></script>
 </body>
