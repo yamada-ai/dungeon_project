@@ -105,12 +105,15 @@ def main():
     t = Simulator2({})
     random.seed()
 
+    max_step = 10000
+
     log = []
-    for step in range(100000):
-        print(step, '/', 100000)
+    for step in range(max_step):
         state = sim.info()
         e = enemy(state)
         sum_reward = 0
+        episode_reward = 0
+        turn = 0
         while not state['isEnd']:
             print(state['roomId'], state['x'], state['y'], 'reward:', sum_reward, '\r', end='')
             action = select_action(q[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]], eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]])
@@ -132,11 +135,14 @@ def main():
                     sum_c[rule] += 1
                     q[rule] = sum_r[rule] / sum_c[rule]
                     log.clear()
+                    episode_reward += sum_reward
                     sum_reward = 0
             state = next_state
             e = e2
+            turn += 1
         sim.reset()
-        if step % 10000:
+        print(step, '/', max_step, 'reward:', episode_reward, 'turn:', turn)
+        if step % (max_step // 10):
             test(t, q)
 
     np.save('q_table1.npy', q1)
