@@ -100,9 +100,9 @@ def main():
     sum_r = np.zeros((5, 13, 12, 5, 5, 5, 5, 5))
     sum_c = np.zeros((5, 13, 12, 5, 5, 5, 5, 5), dtype=np.int64)
     random.seed(0)
-    sim = CellMoveSimulator({})
+    sim = CellMoveSimulator({'firstRoom': 2})
     random.seed(0)
-    t = Simulator2({})
+    t = Simulator2({'firstRoom': 2})
     random.seed()
 
     max_step = 10000
