@@ -21,6 +21,9 @@ request
 {
   "seed": int,
   "mode": int,
+  "firstRoom": int, // 最初の部屋を指定できる(Option)
+  "noEnemy": bool, // trueのとき敵が出現しなくなる(Option)
+  "maxTurn": int, // このターン数が経過するとゲームが終了する(Option)
   "reward": list[int], // まだ未定
 }
 ```
