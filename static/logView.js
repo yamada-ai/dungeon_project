@@ -6,6 +6,7 @@ var app = new Vue({
         log: '',
         floor_map: [[]],
         index: 0,
+        action: '',
     },
     async mounted() {
         await axios.get('/log/list').then(response => {
@@ -43,6 +44,13 @@ var app = new Vue({
                     this.floor_map[e.y][e.x] = 4;
                 }
             });
+            switch(this.raw.moveLog[this.index].action){
+                case 0: this.action = 'attack'; break;
+                case 1: this.action = 'up'; break;
+                case 2: this.action = 'right'; break;
+                case 3: this.action = 'down'; break;
+                case 4: this.action = 'left'; break;
+            }
         },
         prev: function(){
             this.index -= 1;
