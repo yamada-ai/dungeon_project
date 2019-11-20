@@ -75,7 +75,6 @@ def select_action(q, eps):
 
 
 def test(sim, q):
-    random.seed(0)
     state = sim.info()
     e = enemy(state)
     while not state['isEnd']:
@@ -107,7 +106,7 @@ def main():
 
     max_step = 10000
 
-    log = []
+    log = set()
     for step in range(max_step):
         state = sim.info()
         e = enemy(state)
@@ -117,8 +116,8 @@ def main():
         while not state['isEnd']:
             print(state['roomId'], state['x'], state['y'], '\r', end='')
             action = select_action(q[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]], eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]])
-            eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]] *= eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]]
-            log.append((
+            eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]] *= 0.98
+            log.add((
                 state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1],
                 action
             ))
@@ -134,9 +133,9 @@ def main():
                     sum_r[rule] += sum_reward
                     sum_c[rule] += 1
                     q[rule] = sum_r[rule] / sum_c[rule]
-                    log.clear()
-                    episode_reward += sum_reward
-                    sum_reward = 0
+                log.clear()
+                episode_reward += sum_reward
+                sum_reward = 0
             state = next_state
             e = e2
             turn += 1
