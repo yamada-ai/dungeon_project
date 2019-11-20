@@ -97,6 +97,7 @@ class CellMoveSimulator(Simulator):
         self._load_enemy(first_room.id)
 
     def action(self, action):
+        self.turn += 1
         next_room_id = -1
         if type(action) == dict:
             next_room_id = action['nextRoomId']
@@ -122,6 +123,10 @@ class CellMoveSimulator(Simulator):
             self.friend_agent.x -= 1
 
         if self.map[self.friend_agent.y][self.friend_agent.x] == CellInfo.WALL:
+            self.friend_agent.x = before_point[0]
+            self.friend_agent.y = before_point[1]
+
+        if any([(enemy.x, enemy.y) == (self.friend_agent.x, self.friend_agent.y) for enemy in self.enemy_list]):
             self.friend_agent.x = before_point[0]
             self.friend_agent.y = before_point[1]
 
@@ -155,7 +160,6 @@ class CellMoveSimulator(Simulator):
             self.is_end = True
             return 100
 
-        self.turn += 1
         return -1
 
     def _load_enemy(self, room_id):
