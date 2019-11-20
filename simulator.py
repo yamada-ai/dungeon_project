@@ -97,6 +97,7 @@ class CellMoveSimulator(Simulator):
         self._load_enemy(first_room.id)
 
     def action(self, action):
+        self.turn += 1
         next_room_id = -1
         if type(action) == dict:
             next_room_id = action['nextRoomId']
@@ -159,7 +160,6 @@ class CellMoveSimulator(Simulator):
             self.is_end = True
             return 100
 
-        self.turn += 1
         return -1
 
     def _load_enemy(self, room_id):
