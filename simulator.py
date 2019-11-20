@@ -125,6 +125,10 @@ class CellMoveSimulator(Simulator):
             self.friend_agent.x = before_point[0]
             self.friend_agent.y = before_point[1]
 
+        if any([(enemy.x, enemy.y) == (self.friend_agent.x, self.friend_agent.y) for enemy in self.enemy_list]):
+            self.friend_agent.x = before_point[0]
+            self.friend_agent.y = before_point[1]
+
         self._enemy_action()
 
         if self.turn > self.max_turn:
