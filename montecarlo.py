@@ -95,7 +95,7 @@ def main():
     print(q1)
     # alpha = 0.1
     # gamma = 0.8
-    q = np.zeros((5, 13, 12, 5, 5, 5, 5, 5))
+    q = np.random.random((5, 13, 12, 5, 5, 5, 5, 5))
     eps = np.full((5, 13, 12, 5, 5, 5, 5), 0.99)
     sum_r = np.zeros((5, 13, 12, 5, 5, 5, 5, 5))
     sum_c = np.zeros((5, 13, 12, 5, 5, 5, 5, 5), dtype=np.int64)
@@ -115,7 +115,7 @@ def main():
         episode_reward = 0
         turn = 0
         while not state['isEnd']:
-            print(state['roomId'], state['x'], state['y'], 'reward:', sum_reward, '\r', end='')
+            print(state['roomId'], state['x'], state['y'], '\r', end='')
             action = select_action(q[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]], eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]])
             eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]] *= eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]]
             log.append((
@@ -142,7 +142,7 @@ def main():
             turn += 1
         sim.reset()
         print(step, '/', max_step, 'reward:', episode_reward, 'turn:', turn)
-        if step % (max_step // 10):
+        if step % (max_step // 10) == 0:
             test(t, q)
 
     np.save('q_table1.npy', q1)
