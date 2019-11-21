@@ -55,7 +55,7 @@ def cell2color(cell):
 
 class Dungeon:
 
-    def __init__(self, row: int, column: int):
+    def __init__(self, row: int, column: int, no_generate_enemy=False):
         """
             row : マップの縦幅(壁)
             column : マップの横幅(壁)
@@ -96,7 +96,8 @@ class Dungeon:
         self._print_roads2map()
         self.set_protected_area()
         self.goal_room_index = self._generate_goal()
-        self._generate_enemy()
+        if not no_generate_enemy:
+            self._generate_enemy()
         self.floor_map[self.floor_map == CellInfo.OTHER] = CellInfo.WALL
         self.print_floor_map()
 
