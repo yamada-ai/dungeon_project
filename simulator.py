@@ -22,8 +22,11 @@ class Simulator:
 
 
 class RoomGraphSimulator(Simulator):
-    def __init__(self):
-        self.dungeon = Dungeon(30, 40)
+    def __init__(self, dungeon=None):
+        if dungeon is None:
+            self.dungeon = Dungeon(30, 40)
+        else:
+            self.dungeon = dungeon
         self.is_end = False
 
         # 部屋のグラフを指す隣接行列
@@ -62,8 +65,11 @@ class RoomGraphSimulator(Simulator):
 
 
 class CellMoveSimulator(Simulator):
-    def __init__(self, param):
-        self.dungeon = Dungeon(30, 40)
+    def __init__(self, param, dungeon=None):
+        if dungeon is None:
+            self.dungeon = Dungeon(30, 40)
+        else:
+            self.dungeon = dungeon
         self.is_end = False
         self.friend_agent: Friend = None
         self.turn = 0
@@ -97,6 +103,7 @@ class CellMoveSimulator(Simulator):
         self._load_enemy(first_room.id)
 
     def action(self, action):
+        self.turn += 1
         next_room_id = -1
         if type(action) == dict:
             next_room_id = action['nextRoomId']
@@ -159,7 +166,6 @@ class CellMoveSimulator(Simulator):
             self.is_end = True
             return 100
 
-        self.turn += 1
         return -1
 
     def _load_enemy(self, room_id):
@@ -231,9 +237,9 @@ class CellMoveSimulator(Simulator):
 
 
 class Simulator2(CellMoveSimulator):
-    def __init__(self, param):
+    def __init__(self, param, dungeon=None):
         self.log = []
-        super().__init__(param)
+        super().__init__(param, dungeon=dungeon)
 
     def action(self, action):
         super().action(action)
