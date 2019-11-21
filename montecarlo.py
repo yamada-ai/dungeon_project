@@ -128,7 +128,7 @@ def main():
 
             sum_reward += reward
             # q[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1], action] = (1.0-alpha)*q[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1], action] + alpha*(reward + gamma*q[next_state['roomId'], next_state['x'], next_state['y'], e2[0][0], e2[0][1], e2[1][0], e2[1][1]].max())
-            if reward != 0:
+            if reward != 0 or reward != -1:
                 for rule in log:
                     sum_r[rule] += sum_reward
                     sum_c[rule] += 1
