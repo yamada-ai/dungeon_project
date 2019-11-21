@@ -1,6 +1,7 @@
 import time
 
 from simulator import *
+from Dungeon import Dungeon
 import random
 import numpy as np
 
@@ -12,16 +13,16 @@ def select_action1(actions, eps):
     return actions.argmax()
 
 
-def learn_room_move():
+def learn_room_move(dungeon):
     q = np.random.random((5, 5))
     eps = [0.99]*5
     sum_r = [[0.0]*5 for _ in range(5)]
     sum_c = [[0]*5 for _ in range(5)]
 
     log = []
-    random.seed(0)
-    sim = RoomGraphSimulator()
-    random.seed()
+    # random.seed(0)
+    sim = RoomGraphSimulator(dungeon=dungeon)
+    # random.seed()
 
     for step in range(100):
         state = sim.info()
@@ -75,7 +76,6 @@ def select_action(q, eps):
 
 
 def test(sim, q):
-    random.seed(0)
     state = sim.info()
     e = enemy(state)
     while not state['isEnd']:
@@ -91,23 +91,23 @@ def test(sim, q):
 
 
 def main():
-    q1 = np.array(learn_room_move())
+    alpha = 0.1
+    gamma = 0.8
+    q = np.zeros((5, 20, 15, 5, 5, 5, 5, 5))
+    eps = np.full((5, 20, 15, 5, 5, 5, 5), 0.99)
+    # sum_r = np.zeros((5, 13, 12, 5, 5, 5, 5, 5))
+    # sum_c = np.zeros((5, 13, 12, 5, 5, 5, 5, 5), dtype=np.int64)
+    # random.seed(0)
+    dungeon = Dungeon(30, 40)
+    q1 = np.array(learn_room_move(dungeon))
     print(q1)
-    # alpha = 0.1
-    # gamma = 0.8
-    q = np.zeros((5, 13, 12, 5, 5, 5, 5, 5))
-    eps = np.full((5, 13, 12, 5, 5, 5, 5), 0.99)
-    sum_r = np.zeros((5, 13, 12, 5, 5, 5, 5, 5))
-    sum_c = np.zeros((5, 13, 12, 5, 5, 5, 5, 5), dtype=np.int64)
-    random.seed(0)
-    sim = CellMoveSimulator({})
-    random.seed(0)
-    t = Simulator2({})
+    sim = CellMoveSimulator({}, dungeon=dungeon)
+    t = Simulator2({}, dungeon=dungeon)
     random.seed()
 
-    max_step = 10000
+    max_step = 50000
 
-    log = []
+    # log = []
     for step in range(max_step):
         state = sim.info()
         e = enemy(state)
@@ -115,34 +115,34 @@ def main():
         episode_reward = 0
         turn = 0
         while not state['isEnd']:
-            print(state['roomId'], state['x'], state['y'], 'reward:', sum_reward, '\r', end='')
+            print(state['roomId'], state['x'], state['y'], 'reward:', sum_reward, 'turn:', turn, '\r', end='')
             action = select_action(q[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]], eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]])
-            eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]] *= eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]]
-            log.append((
-                state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1],
-                action
-            ))
+            eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]] *= 0.98
+            # log.append((
+            #     state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1],
+            #     action
+            # ))
 
             reward = sim.action({'action': int(action), 'nextRoomId': q1[state['roomId']]})
             next_state = sim.info()
             e2 = enemy(next_state)
 
             sum_reward += reward
-            # q[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1], action] = (1.0-alpha)*q[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1], action] + alpha*(reward + gamma*q[next_state['roomId'], next_state['x'], next_state['y'], e2[0][0], e2[0][1], e2[1][0], e2[1][1]].max())
-            if reward != 0:
-                for rule in log:
-                    sum_r[rule] += sum_reward
-                    sum_c[rule] += 1
-                    q[rule] = sum_r[rule] / sum_c[rule]
-                    log.clear()
-                    episode_reward += sum_reward
-                    sum_reward = 0
+            q[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1], action] = (1.0-alpha)*q[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1], action] + alpha*(reward + gamma*q[next_state['roomId'], next_state['x'], next_state['y'], e2[0][0], e2[0][1], e2[1][0], e2[1][1]].max())
+            # if reward != 0:
+            #     for rule in log:
+            #         sum_r[rule] += sum_reward
+            #         sum_c[rule] += 1
+            #         q[rule] = sum_r[rule] / sum_c[rule]
+            #         log.clear()
+            #         episode_reward += sum_reward
+            #         sum_reward = 0
             state = next_state
             e = e2
             turn += 1
         sim.reset()
-        print(step, '/', max_step, 'reward:', episode_reward, 'turn:', turn)
-        if step % (max_step // 10):
+        print(step, '/', max_step, 'reward:', sum_reward, 'turn:', turn)
+        if step % (max_step // 10) == 0:
             test(t, q)
 
     np.save('q_table1.npy', q1)
@@ -154,8 +154,8 @@ def main():
 
 
 def load():
-    q1 = np.load('q_table1.npy')
-    q = np.load('q_table2.npy')
+    q1 = np.load('1q_table1.npy')
+    q = np.load('1q_table2.npy')
     random.seed(0)
     sim = Simulator2({})
     for _ in range(5):
