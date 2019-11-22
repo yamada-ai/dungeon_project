@@ -66,8 +66,9 @@ class RoomGraphSimulator(Simulator):
 
 class CellMoveSimulator(Simulator):
     def __init__(self, param, dungeon=None):
+        self.random_enemy = param.get('randomEnemy', False)
         if dungeon is None:
-            self.dungeon = Dungeon(30, 40)
+            self.dungeon = Dungeon(30, 40, no_generate_enemy=self.random_enemy)
         else:
             self.dungeon = dungeon
         self.is_end = False
@@ -171,9 +172,19 @@ class CellMoveSimulator(Simulator):
     def _load_enemy(self, room_id):
         if self.no_enemy:
             return
-        for p, e in zip(self.dungeon.rooms[room_id].initial_enemy_positions, self.enemy_list):
-            e.x = p[0]
-            e.y = p[1]
+        if self.random_enemy:
+            room = self.dungeon.rooms[room_id]
+            for e in self.enemy_list:
+                room_map = self.dungeon.get_room_map(room)
+                index = random.choice(np.where(room_map.reshape(-1) == CellInfo.ROOM)[0])
+                y = int(index / room_map.shape[1] + room.origin[0])
+                x = int(index % room_map.shape[1] + room.origin[1])
+                e.x = x
+                e.y = y
+        else:
+            for p, e in zip(self.dungeon.rooms[room_id].initial_enemy_positions, self.enemy_list):
+                e.x = p[0]
+                e.y = p[1]
 
     def _enemy_action(self):
         enemy_positions = set()

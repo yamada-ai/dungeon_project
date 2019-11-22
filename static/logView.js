@@ -7,6 +7,7 @@ var app = new Vue({
         floor_map: [[]],
         index: 0,
         action: '',
+        intervalId: 0,
     },
     async mounted() {
         await axios.get('/log/list').then(response => {
@@ -38,7 +39,14 @@ var app = new Vue({
             this.floor_map = JSON.parse(JSON.stringify(this.raw.cellMap));
             let agent = this.raw.moveLog[this.index].agent;
             let enemies = this.raw.moveLog[this.index].enemies;
-            this.floor_map[agent.y][agent.x] = 3;
+            if(this.index >= this.raw.moveLog.length-1){
+                if(this.floor_map[agent.y][agent.x] !== 5){
+                    this.floor_map[agent.y][agent.x] = 6;
+                }
+                this.floor_map[agent.y][agent.x] = 3;
+            }else{
+                this.floor_map[agent.y][agent.x] = 3;
+            }
             enemies.forEach(e => {
                 if(e.x !== -1 && e.y !== -1){
                     this.floor_map[e.y][e.x] = 4;
@@ -65,6 +73,19 @@ var app = new Vue({
                 this.index = this.raw.moveLog.length-1;
             }
             this.setAgent();
+        },
+        play: function(){
+            this.intervalId = setInterval(function(){
+                if(app.index >= app.raw.moveLog.length - 1){
+                    app.index = 0;
+                    app.setAgent();
+                    return;
+                }
+                app.next();
+            }, 200);
+        },
+        stop: function(){
+            clearInterval(this.intervalId);
         },
         onKeyDown: function(keyCode){
             switch(keyCode){
