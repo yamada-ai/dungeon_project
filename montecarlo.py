@@ -3,6 +3,7 @@ import time
 from simulator import *
 import random
 import numpy as np
+import pickle
 
 
 def select_action1(actions, eps):
@@ -103,6 +104,8 @@ def main():
     sum_c = np.zeros((5, 13, 12, 5, 5, 5, 5, 5), dtype=np.int64)
     random.seed(0)
     dungeon = Dungeon(30, 40)
+    with open('dungeon.dump', 'wb') as file: 
+        pickle.dump(dungeon, file)
     sim = CellMoveSimulator({}, dungeon=dungeon)
     t = Simulator2({}, dungeon=dungeon)
     random.seed()
