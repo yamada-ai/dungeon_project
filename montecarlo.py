@@ -115,7 +115,7 @@ def main():
     # log = set()
     log = []
 
-    file = open('log.csv', 'w')
+    file = open('log1.csv', 'w')
     for step in range(max_step):
         state = sim.info()
         e = enemy(state)
