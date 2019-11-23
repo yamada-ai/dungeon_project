@@ -110,7 +110,7 @@ def main():
     t = Simulator2({}, dungeon=dungeon)
     random.seed()
 
-    max_step = 100000
+    max_step = 200000
 
     # log = set()
     log = []
@@ -126,7 +126,7 @@ def main():
             # print(state['roomId'], state['x'], state['y'], '\r', end='')
             action = select_action(q[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]], eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]])
             action = int(action)
-            eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]] *= 0.995
+            eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]] *= 0.999
             # log.add((
             #     state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1],
             #     action
