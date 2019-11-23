@@ -166,7 +166,7 @@ def main():
         sim.reset()
         # print(step, '/', max_step, 'reward:', episode_reward, 'turn:', turn)
         print(step, '/', max_step, 'reward:', sum_reward, 'turn:', turn)
-        file.write(f'{step},{sum_reward},{turn}')
+        file.write(f'{step},{sum_reward},{turn}\n')
         if step % (max_step // 10) == 0:
             test(t, q)
 
