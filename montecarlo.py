@@ -107,7 +107,7 @@ def main():
     t = Simulator2({}, dungeon=dungeon)
     random.seed()
 
-    max_step = 50000
+    max_step = 100000
 
     # log = set()
     log = []
@@ -118,7 +118,7 @@ def main():
         episode_reward = 0
         turn = 0
         while not state['isEnd']:
-            print(state['roomId'], state['x'], state['y'], '\r', end='')
+            # print(state['roomId'], state['x'], state['y'], '\r', end='')
             action = select_action(q[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]], eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]])
             action = int(action)
             eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]] *= 0.99
@@ -135,8 +135,8 @@ def main():
             next_state = sim.info()
             e2 = enemy(next_state)
 
-            if reward != -1:
-                sum_reward += reward
+            if reward == -1:
+                sum_reward += 0.1*reward
             # q[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1], action] = (1.0-alpha)*q[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1], action] + alpha*(reward + gamma*q[next_state['roomId'], next_state['x'], next_state['y'], e2[0][0], e2[0][1], e2[1][0], e2[1][1]].max())
             if reward < -1 or 0 < reward:
                 for rule in log:
