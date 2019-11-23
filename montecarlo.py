@@ -111,6 +111,8 @@ def main():
 
     # log = set()
     log = []
+
+    file = open('log.csv', 'w')
     for step in range(max_step):
         state = sim.info()
         e = enemy(state)
@@ -121,7 +123,7 @@ def main():
             # print(state['roomId'], state['x'], state['y'], '\r', end='')
             action = select_action(q[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]], eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]])
             action = int(action)
-            eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]] *= 0.99
+            eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]] *= 0.995
             # log.add((
             #     state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1],
             #     action
@@ -137,26 +139,37 @@ def main():
 
             if reward == -1:
                 sum_reward += 0.1*reward
+            else:
+                sum_reward += reward
             # q[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1], action] = (1.0-alpha)*q[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1], action] + alpha*(reward + gamma*q[next_state['roomId'], next_state['x'], next_state['y'], e2[0][0], e2[0][1], e2[1][0], e2[1][1]].max())
-            if reward < -1 or 0 < reward:
-                for rule in log:
-                    # print(rule)
-                    sum_r[rule] += sum_reward
-                    sum_c[rule] += 1
-                    q[rule] = sum_r[rule] / sum_c[rule]
-                log.clear()
-                episode_reward += sum_reward
-                sum_reward = 0
+            # if reward < -1 or 0 < reward:
+            #     for rule in log:
+            #         # print(rule)
+            #         sum_r[rule] += sum_reward
+            #         sum_c[rule] += 1
+            #         q[rule] = sum_r[rule] / sum_c[rule]
+            #     log.clear()
+            #     episode_reward += sum_reward
+            #     sum_reward = 0
             state = next_state
             e = e2
             turn += 1
+        for rule in log:
+            # print(rule)
+            sum_r[rule] += sum_reward
+            sum_c[rule] += 1
+            q[rule] = sum_r[rule] / sum_c[rule]
+        log.clear()
         sim.reset()
-        print(step, '/', max_step, 'reward:', episode_reward, 'turn:', turn)
+        # print(step, '/', max_step, 'reward:', episode_reward, 'turn:', turn)
+        print(step, '/', max_step, 'reward:', sum_reward, 'turn:', turn)
+        file.write(f'{step},{sum_reward},{turn}')
         if step % (max_step // 10) == 0:
             test(t, q)
 
     np.save('q_table1.npy', q1)
     np.save('q_table2.npy', q)
+    file.close()
 
     for _ in range(15):
         test(t, q)
