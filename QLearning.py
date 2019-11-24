@@ -97,7 +97,7 @@ def main():
     eps = np.full((5, 20, 15, 5, 5, 5, 5), 0.99)
     # sum_r = np.zeros((5, 13, 12, 5, 5, 5, 5, 5))
     # sum_c = np.zeros((5, 13, 12, 5, 5, 5, 5, 5), dtype=np.int64)
-    # random.seed(0)
+    random.seed(0)
     dungeon = Dungeon(30, 40)
     q1 = np.array(learn_room_move(dungeon))
     print(q1)
@@ -105,9 +105,10 @@ def main():
     t = Simulator2({}, dungeon=dungeon)
     random.seed()
 
-    max_step = 50000
+    max_step = 1000000
 
     # log = []
+    file = open('QL_log.csv', 'w')
     for step in range(max_step):
         state = sim.info()
         e = enemy(state)
@@ -142,6 +143,7 @@ def main():
             turn += 1
         sim.reset()
         print(step, '/', max_step, 'reward:', sum_reward, 'turn:', turn)
+        file.write(f'{step},{sum_reward},{turn}\n')
         if step % (max_step // 10) == 0:
             test(t, q)
 
