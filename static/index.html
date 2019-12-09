@@ -6,26 +6,22 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css">
   <link rel="stylesheet" href="style.css">
   <title>Viewer</title>
 </head>
 <body>
   <div id="app">
-    <input type="radio" id="1" value="1" v-model="mode">
-    <label for="1">1</label>
-    <input type="radio" id="2" value="2" v-model="mode">
-    <label for="2">2</label>
-    <input type="radio" id="3" value="3" v-model="mode">
-    <label for="3">3</label><br>
+    <select v-model="log">
+      <option v-for="e in list" v-bind:value="e">{{ e }}</option>
+    </select>
+    <div>{{ log }}</div>
+    <button v-on:click="getList">UPDATE LIST</button>
+    <button v-on:click="play">PLAY</button>
+    <button v-on:click="stop">STOP</button>
+    <span>playSpeed: {{ intervalIds.length }}</span>
+    <div>turn: {{ index }}</div>
+    <div>action: {{ action }}</div>
 
-    <label>id: <input type="text" v-model="id"></label>
-    <label>seed: <input type="text" v-model="seed"></label>
-    <div>{{ reward }}</div>
-    <button v-on:click="createSimulator">CREATE</button>
-    <button v-on:click="refresh">REFRESH</button>
-    <button v-on:click="reset">RESET</button>
-    <p v-if="isEnd" id="isEnd">GAME END</p>
     <div id="game">
       <div id="field">
         <div v-for="line in floor_map" class="line">
@@ -34,22 +30,10 @@
           </div>
         </div>
       </div>
-      <div id="input">
-        <div class="cross-button">
-          <button class="up-button" v-on:click="up">↑</button>
-          <button class="down-button" v-on:click="down">↓</button>
-          <button class="left-button" v-on:click="left">←</button>
-          <button class="right-button" v-on:click="right">→</button>
-        </div>
-        <div>
-          <div class="attack-button">
-            <button class="center-button" v-on:click="attack">A</button>
-          </div>
-        </div>
-      </div>
     </div>
-    <div>{{ raw }}</div>
+
+    <div id="raw" hidden>{{ raw }}</div>
   </div>
-  <script src="app.js"></script>
+  <script src="logView.js"></script>
 </body>
 </html>

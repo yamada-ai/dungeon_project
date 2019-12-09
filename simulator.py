@@ -250,10 +250,12 @@ class CellMoveSimulator(Simulator):
 class Simulator2(CellMoveSimulator):
     def __init__(self, param, dungeon=None):
         self.log = []
+        self.reward_sum = 0
         super().__init__(param, dungeon=dungeon)
 
     def action(self, action):
-        super().action(action)
+        reward = super().action(action)
+        self.reward_sum += reward
         self.log.append({
             'agent': self.friend_agent.__dict__.copy(),
             'enemies': [enemy.__dict__.copy() for enemy in self.enemy_list],
@@ -262,17 +264,20 @@ class Simulator2(CellMoveSimulator):
 
         if self.is_end:
             self.save()
+        return reward
 
     def save(self):
         now = datetime.datetime.now()
         with open(f'log/{now.strftime("%Y%m%d_%H%M%S")}.log', 'w') as file:
             json.dump({
+                'rewardSum': self.reward_sum,
                 'cellMap': [[e.value for e in line] for line in self.map],
                 'moveLog': self.log
             }, file)
 
     def reset(self):
         super().reset()
+        self.reward_sum = 0
         self.log.clear()
         self.log.append({
             'agent': self.friend_agent.__dict__.copy(),
