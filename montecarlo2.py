@@ -4,6 +4,7 @@ from simulator import *
 import random
 import numpy as np
 import pickle
+import sys
 
 
 def select_action1(actions, eps):
@@ -13,19 +14,16 @@ def select_action1(actions, eps):
     return actions.argmax()
 
 
-def learn_room_move():
+def learn_room_move(simulator):
     q = np.random.random((5, 5))
     eps = [0.99]*5
     sum_r = [[0.0]*5 for _ in range(5)]
     sum_c = [[0]*5 for _ in range(5)]
 
     log = []
-    random.seed(0)
-    sim = RoomGraphSimulator()
-    random.seed()
 
     for step in range(100):
-        state = sim.info()
+        state = simulator.info()
         is_end = False
         sum_reward = 0
         while not is_end:
@@ -35,8 +33,8 @@ def learn_room_move():
                 state['roomId'],
                 action
             ))
-            reward = sim.action(int(action))
-            next_state = sim.info()
+            reward = simulator.action(int(action))
+            next_state = simulator.info()
             sum_reward += reward
             if reward != 0:
                 for rule in log:
@@ -48,9 +46,9 @@ def learn_room_move():
             if reward == 100:
                 is_end = True
             state = next_state
-        sim.reset()
+        simulator.reset()
     destination_room = [int(e.argmax()) for e in q]
-    destination_room[sim.goal_room_id] = -1
+    destination_room[simulator.goal_room_id] = -1
     return destination_room
 
 
@@ -93,29 +91,25 @@ def test(sim, q):
 
 
 def main():
-    q1 = np.array(learn_room_move())
-    print(q1)
-    # alpha = 0.1
-    # gamma = 0.8
-    q = np.random.random((5, 13, 12, 5, 5, 5, 5, 5))
-    # q = np.zeros((5, 13, 12, 5, 5, 5, 5, 5))
-    eps = np.full((5, 13, 12, 5, 5, 5, 5), 0.99)
-    sum_r = np.zeros((5, 13, 12, 5, 5, 5, 5, 5))
-    sum_c = np.zeros((5, 13, 12, 5, 5, 5, 5, 5), dtype=np.int64)
     random.seed(0)
     dungeon = Dungeon(30, 40)
     with open('dungeon.dump', 'wb') as file: 
         pickle.dump(dungeon, file)
+    room_graph_simulator = RoomGraphSimulator(dungeon)
+    q1 = np.array(learn_room_move(room_graph_simulator))
+    q = np.random.random((5, 13, 12, 5, 5, 5, 5, 5))
+    eps = np.full((5, 13, 12, 5, 5, 5, 5), 0.99)
+    sum_r = np.zeros((5, 13, 12, 5, 5, 5, 5, 5))
+    sum_c = np.zeros((5, 13, 12, 5, 5, 5, 5, 5), dtype=np.int64)
     sim = CellMoveSimulator({}, dungeon=dungeon)
     t = Simulator2({}, dungeon=dungeon)
     random.seed()
 
-    max_step = 200000
+    max_step = 400000
 
     log = set()
-    # log = []
 
-    file = open('log2.csv', 'w')
+    file = open(sys.argv[1], 'w')
     for step in range(max_step):
         state = sim.info()
         e = enemy(state)
@@ -123,7 +117,6 @@ def main():
         episode_reward = 0
         turn = 0
         while not state['isEnd']:
-            # print(state['roomId'], state['x'], state['y'], '\r', end='')
             action = select_action(q[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]], eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]])
             action = int(action)
             eps[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1]] *= 0.999
@@ -131,10 +124,6 @@ def main():
                 state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1],
                 action
             ))
-            # log.append((
-            #     state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1],
-            #     action
-            # ))
 
             reward = sim.action({'action': action, 'nextRoomId': q1[state['roomId']]})
             next_state = sim.info()
@@ -144,34 +133,22 @@ def main():
                 sum_reward += 0.1*reward
             else:
                 sum_reward += reward
-            # q[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1], action] = (1.0-alpha)*q[state['roomId'], state['x'], state['y'], e[0][0], e[0][1], e[1][0], e[1][1], action] + alpha*(reward + gamma*q[next_state['roomId'], next_state['x'], next_state['y'], e2[0][0], e2[0][1], e2[1][0], e2[1][1]].max())
-            # if reward < -1 or 0 < reward:
-            #     for rule in log:
-            #         # print(rule)
-            #         sum_r[rule] += sum_reward
-            #         sum_c[rule] += 1
-            #         q[rule] = sum_r[rule] / sum_c[rule]
-            #     log.clear()
-            #     episode_reward += sum_reward
-            #     sum_reward = 0
             state = next_state
             e = e2
             turn += 1
         for rule in log:
-            # print(rule)
             sum_r[rule] += sum_reward
             sum_c[rule] += 1
             q[rule] = sum_r[rule] / sum_c[rule]
         log.clear()
         sim.reset()
-        # print(step, '/', max_step, 'reward:', episode_reward, 'turn:', turn)
         print(step, '/', max_step, 'reward:', sum_reward, 'turn:', turn)
         file.write(f'{step},{sum_reward},{turn}\n')
         if step % (max_step // 10) == 0:
             test(t, q)
 
-    np.save('q_table1.npy', q1)
-    np.save('q_table2.npy', q)
+    np.save(sys.argv[2], q1)
+    np.save(sys.argv[3], q)
     file.close()
 
     for _ in range(15):
@@ -179,16 +156,23 @@ def main():
         time.sleep(1)
 
 
-def load():
-    q1 = np.load('q_table1.npy')
-    q = np.load('q_table2.npy')
-    random.seed(0)
-    sim = Simulator2({})
-    for _ in range(5):
+def load(dungeon, q_table_1, q_table_2, num_episodes):
+    with open(dungeon, 'rb') as f:
+        dungeon = pickle.load(f)
+    q1 = np.load(q_table_1)
+    q = np.load(q_table_2)
+    sim = Simulator2({}, dungeon)
+    for _ in range(num_episodes):
         test(sim, q)
         time.sleep(1)
 
 
 if __name__ == '__main__':
+    if len(sys.argv) < 4:
+        print('invalid parameters')
+        print('montecarlo2.py log_file_name q_table1_file_name q_table2_file_name')
+        sys.exit(1)
+    if len(sys.argv) == 5:
+        load(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+        sys.exit(0)
     main()
-    # load()
