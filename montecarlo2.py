@@ -133,17 +133,21 @@ def main():
                 sum_reward += 0.1*reward
             else:
                 sum_reward += reward
+            episode_reward += reward
             state = next_state
             e = e2
             turn += 1
+
+        is_clear = 1 if reward == 100 else 0
+        
         for rule in log:
             sum_r[rule] += sum_reward
             sum_c[rule] += 1
             q[rule] = sum_r[rule] / sum_c[rule]
         log.clear()
         sim.reset()
-        print(step, '/', max_step, 'reward:', sum_reward, 'turn:', turn)
-        file.write(f'{step},{sum_reward},{turn}\n')
+        print(step, '/', max_step, 'reward:', episode_reward, 'turn:', turn)
+        file.write(f'{step},{episode_reward},{turn},{is_clear}\n')
         if step % (max_step // 10) == 0:
             test(t, q)
 
