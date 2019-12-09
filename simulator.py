@@ -264,6 +264,7 @@ class Simulator2(CellMoveSimulator):
 
         if self.is_end:
             self.save()
+        return reward
 
     def save(self):
         now = datetime.datetime.now()
