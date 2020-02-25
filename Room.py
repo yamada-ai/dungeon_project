@@ -61,6 +61,13 @@ class Room:
         floor_map[self.origin[0], self.origin[1] + self.size[1] - 1] = CellInfo.PROTECTED
         floor_map[self.origin[0] + self.size[0] - 1, self.origin[1] + self.size[1] - 1] = CellInfo.PROTECTED
 
+    def info(self):
+        return {
+            'id': self.id,
+            'origin': self.origin,
+            'size': self.size,
+        }
+
     def dump2json(self):
         return {
             'id': self.id,
